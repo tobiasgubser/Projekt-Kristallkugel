@@ -14,8 +14,11 @@ st.set_page_config(
 # Load df_all (CSV statt Pickle)
 # ---------------------------------------------------------
 @st.cache_resource
+@st.cache_resource
 def load_df_all():
-    return pd.read_csv("df_all.csv")
+    df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df = df.set_index("date")
+    return df
 
 df_all = load_df_all()
 
