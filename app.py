@@ -11,15 +11,11 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# Load df_all (you already have it in your Colab environment)
+# Load df_all (CSV statt Pickle)
 # ---------------------------------------------------------
-# IMPORTANT: df_all must be loaded BEFORE running streamlit
-# Example:
-# df_all = pd.read_pickle("df_all.pkl")
-
 @st.cache_resource
 def load_df_all():
-    return pd.read_pickle("df_all.pkl")
+    return pd.read_csv("df_all.csv")
 
 df_all = load_df_all()
 
