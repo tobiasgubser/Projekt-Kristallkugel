@@ -14,11 +14,7 @@ st.set_page_config(
 # Load df_all (CSV statt Pickle)
 # ---------------------------------------------------------
 @st.cache_resource
-def load_df_all():
-    return pd.read_csv("df_all.csv")
-
-df_all = load_df_all()
-
+df_all = pd.read_csv("df_all.csv")
 
 # ---------------------------------------------------------
 # Helper functions
@@ -26,10 +22,8 @@ df_all = load_df_all()
 def get_numeric_cols(df):
     return df.select_dtypes(include=[np.number]).columns.tolist()
 
-
 def normalize(df):
     return df.div(df.iloc[0])
-
 
 def compute_peer_deltas(norm_df):
     deltas = {}
@@ -39,7 +33,6 @@ def compute_peer_deltas(norm_df):
         deltas[col] = norm_df[col] - peer_avg
     return pd.DataFrame(deltas)
 
-
 def summary_table(norm_df):
     last = norm_df.iloc[-1]
     df = pd.DataFrame({
@@ -48,18 +41,15 @@ def summary_table(norm_df):
     })
     return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
 
-
 # ---------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
-numeric_cols = get_numeric_cols(df_all)
-
 selected_cols = st.sidebar.multiselect(
     "Select variables",
-    options=numeric_cols,
-    default=numeric_cols[:4],  # first 4 as default
+    options=["SPI (%)", "Banken (%)", "Finanzen (%)", "Gesundheit (%)", "Lebensmittel (%)", "Versicherungen (%)"],
+    default=["SPI (%)"],
 )
 
 if not selected_cols:
@@ -76,7 +66,6 @@ selected_var = st.sidebar.selectbox(
 
 show_corr = st.sidebar.checkbox("Show correlation matrix")
 show_raw = st.sidebar.checkbox("Show raw data")
-
 
 # ---------------------------------------------------------
 # Layout
