@@ -55,6 +55,13 @@ def summary_table(norm_df):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
+stichtag = st.sidebar.date_input(
+    "Stichtag",
+    value=df_all.index.max().date(),
+    min_value=df_all.index.min().date(),
+    max_value=df_all.index.max().date(),
+)
+
 selected_cols = st.sidebar.multiselect(
     "Select variables",
     options=["SPI (%)", "Banken (%)", "Finanzen (%)", "Gesundheit (%)", "Lebensmittel (%)", "Versicherungen (%)"],
