@@ -17,6 +17,7 @@ st.set_page_config(
 def load_df_all():
     df = pd.read_csv("df_all.csv", parse_dates=["date"])
     df['date'] = pd.to_datetime(df['date'], utc=True)
+    df['date'] = df['date'].dt.tz_convert('Europe/Zurich')
     df = df.set_index("date")
     return df
 
