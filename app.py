@@ -18,7 +18,7 @@ def load_df_all():
     df = pd.read_csv(
         "df_all.csv",
         parse_dates=["date"],
-        date_parser=lambda col: pd.to_datetime(col, utc=True)
+        utc=True
     )
     df["date"] = df["date"].dt.tz_convert("Europe/Zurich")
     df = df.set_index("date")
