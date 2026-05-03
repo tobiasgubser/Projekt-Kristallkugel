@@ -15,13 +15,21 @@ st.set_page_config(
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv(
-        "df_all.csv",
-        parse_dates=["date"],
-        utc=True
-    )
+    df = pd.read_csv("df_all.csv")
+
+    # 1) Datetime sauber parsen (inkl. +01:00)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+
+    # 2) Falls keine Zeitzone vorhanden → UTC setzen
+    if df["date"].dt.tz is None:
+        df["date"] = df["date"].dt.tz_localize("UTC")
+
+    # 3) In Schweizer Zeit konvertieren
     df["date"] = df["date"].dt.tz_convert("Europe/Zurich")
+
+    # 4) Index setzen
     df = df.set_index("date")
+
     return df
 
 df_all = load_df_all()
