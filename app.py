@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-from datetime import date
 
 st.set_page_config(
     page_title="SPI Case Study Dashboard",
@@ -12,27 +11,16 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# Load df_all (robust, correct, timezone-safe)
+# Load df_all (CSV statt Pickle)
 # ---------------------------------------------------------
 @st.cache_resource
+@st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv")
-
-    # Strings wie "2025-01-03 00:00:00+01:00" korrekt einlesen
-    df["date"] = pd.to_datetime(df["date"], utc=True)
-
-    # Zeitzone entfernen OHNE Verschiebung
-    df["date"] = df["date"].dt.tz_convert(None)
-
-    # Als Index setzen
+    df = pd.read_csv("df_all.csv", parse_dates=["date"])
     df = df.set_index("date")
-    df.index = df.index.to_pydatetime()
     return df
 
 df_all = load_df_all()
-
-st.write("Index dtype:", df_all.index.dtype)
-st.write(df_all.index[:5])
 
 # ---------------------------------------------------------
 # Helper functions
@@ -64,18 +52,6 @@ def summary_table(norm_df):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
-# Convert max timestamp → python datetime.date (Streamlit-safe)
-max_d = df_all.index.max().date()
-
-filter_date = st.sidebar.date_input(
-    "Zeige Daten bis:",
-    value=date(2025, 12, 31),
-    min_value=date(2025, 1, 1),
-    max_value=max_d
-)
-
-df_filtered = df_all.loc["2025-01-01":filter_date]
-
 selected_cols = st.sidebar.multiselect(
     "Select variables",
     options=["SPI (%)", "Banken (%)", "Finanzen (%)", "Gesundheit (%)", "Lebensmittel (%)", "Versicherungen (%)"],
@@ -86,7 +62,7 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize(df_filtered[selected_cols])
+norm = normalize(df_all[selected_cols])
 deltas = compute_peer_deltas(norm)
 
 selected_var = st.sidebar.selectbox(
@@ -100,7 +76,7 @@ show_raw = st.sidebar.checkbox("Show raw data")
 # ---------------------------------------------------------
 # Layout
 # ---------------------------------------------------------
-st.title("📊 SPI Case Study Dashboard (df_filtered)")
+st.title("📊 SPI Case Study Dashboard (df_all)")
 
 st.subheader("Manager Summary Table")
 st.dataframe(summary_table(norm), use_container_width=True)
@@ -142,7 +118,7 @@ st.plotly_chart(fig_delta, use_container_width=True)
 
 if show_corr:
     st.subheader("Correlation Matrix")
-    corr = df_filtered[selected_cols].corr()
+    corr = df_all[selected_cols].corr()
     fig_corr = px.imshow(
         corr,
         text_auto=True,
@@ -154,4 +130,4 @@ if show_corr:
 
 if show_raw:
     st.subheader("Raw Data")
-    st.dataframe(df_filtered, use_container_width=True)
+    st.dataframe(df_all, use_container_width=True)
