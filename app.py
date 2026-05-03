@@ -14,9 +14,13 @@ st.set_page_config(
 # Load df_all (CSV statt Pickle)
 # ---------------------------------------------------------
 @st.cache_resource
-@st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df = pd.read_csv(
+        "df_all.csv",
+        parse_dates=["date"],
+        date_parser=lambda col: pd.to_datetime(col, utc=True)
+    )
+    df["date"] = df["date"].dt.tz_convert("Europe/Zurich")
     df = df.set_index("date")
     return df
 
@@ -51,6 +55,16 @@ def summary_table(norm_df):
 # Sidebar
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
+
+min_date = df_all.index.min().date()
+max_date = df_all.index.max().date()
+
+stichtag = st.sidebar.date_input(
+    "Stichtag",
+    value=max_date,
+    min_value=min_date,
+    max_value=max_date,
+)
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
