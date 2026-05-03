@@ -18,6 +18,7 @@ st.set_page_config(
 def load_df_all():
     df = pd.read_csv("df_all.csv", parse_dates=["date"])
     df = df.set_index("date")
+    df = df.sort_index()
     return df
 
 df_all = load_df_all()
@@ -52,11 +53,13 @@ def summary_table(norm_df):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
+from datetime import date
+
 filter_date = st.sidebar.date_input(
     "Zeige Daten bis:",
-    value=pd.to_datetime("2025-12-31"),
-    min_value=pd.to_datetime("2025-01-01"),
-    max_value=df_all.index.max()
+    value=date(2025, 12, 31),
+    min_value=date(2025, 1, 1),
+    max_value=df_all.index.max().date()
 )
 df_filtered = df_all.loc["2025-01-01":filter_date]
 
