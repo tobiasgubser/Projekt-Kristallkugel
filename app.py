@@ -21,6 +21,8 @@ def load_df_all():
 
 df_all = load_df_all()
 
+df_all.index = df_all.index.tz_localize(None)
+
 # ---------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------
