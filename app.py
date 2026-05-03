@@ -16,9 +16,7 @@ st.set_page_config(
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv")
-    df["date"] = pd.to_datetime(df["date"], utc=True)
-    df["date"] = df["date"].dt.tz_convert(None)
+    df = pd.read_csv("df_all.csv", parse_dates=["date"])
     df = df.set_index("date")
     return df
 
@@ -58,14 +56,15 @@ def summary_table(norm_df):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
-from datetime import date
+max_d = df_all.index.max().to_pydatetime().date()
 
 filter_date = st.sidebar.date_input(
     "Zeige Daten bis:",
     value=date(2025, 12, 31),
     min_value=date(2025, 1, 1),
-    max_value=df_all.index.max().date()
+    max_value=max_d
 )
+
 df_filtered = df_all.loc["2025-01-01":filter_date]
 
 selected_cols = st.sidebar.multiselect(
