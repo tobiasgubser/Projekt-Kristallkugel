@@ -11,9 +11,8 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# Load df_all (CSV statt Pickle)
+# Load df_all
 # ---------------------------------------------------------
-@st.cache_resource
 @st.cache_resource
 def load_df_all():
     df = pd.read_csv("df_all.csv", parse_dates=["date"])
@@ -52,6 +51,14 @@ def summary_table(norm_df):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
+filter_date = st.sidebar.date_input(
+    "Zeige Daten bis:",
+    value=pd.to_datetime("2025-12-31"),
+    min_value=pd.to_datetime("2025-01-01"),
+    max_value=df_all.index.max()
+)
+df_filtered = df_all.loc["2025-01-01":filter_date]
+
 selected_cols = st.sidebar.multiselect(
     "Select variables",
     options=["SPI (%)", "Banken (%)", "Finanzen (%)", "Gesundheit (%)", "Lebensmittel (%)", "Versicherungen (%)"],
@@ -62,7 +69,7 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize(df_all[selected_cols])
+norm = normalize(df_filtered[selected_cols])
 deltas = compute_peer_deltas(norm)
 
 selected_var = st.sidebar.selectbox(
@@ -76,7 +83,7 @@ show_raw = st.sidebar.checkbox("Show raw data")
 # ---------------------------------------------------------
 # Layout
 # ---------------------------------------------------------
-st.title("📊 SPI Case Study Dashboard (df_all)")
+st.title("📊 SPI Case Study Dashboard (df_filtered)")
 
 st.subheader("Manager Summary Table")
 st.dataframe(summary_table(norm), use_container_width=True)
@@ -118,7 +125,7 @@ st.plotly_chart(fig_delta, use_container_width=True)
 
 if show_corr:
     st.subheader("Correlation Matrix")
-    corr = df_all[selected_cols].corr()
+    corr = df_filtered[selected_cols].corr()
     fig_corr = px.imshow(
         corr,
         text_auto=True,
@@ -130,4 +137,4 @@ if show_corr:
 
 if show_raw:
     st.subheader("Raw Data")
-    st.dataframe(df_all, use_container_width=True)
+    st.dataframe(df_filtered, use_container_width=True)
