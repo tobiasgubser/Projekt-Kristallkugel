@@ -12,20 +12,24 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# Load df_all
+# Load df_all (robust, correct, timezone-safe)
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv")
-    df["date"] = df["date"].dt.tz_convert(None)
+    df = pd.read_csv("df_all.csv", parse_dates=["date"])
+
+    # Falls Zeitzone vorhanden → entfernen
+    if df["date"].dt.tz is not None:
+        df["date"] = df["date"].dt.tz_convert(None)
+
     df = df.set_index("date")
+    df = df.sort_index()
     return df
 
 df_all = load_df_all()
 
 st.write("Index dtype:", df_all.index.dtype)
 st.write(df_all.index[:5])
-
 
 # ---------------------------------------------------------
 # Helper functions
@@ -57,6 +61,7 @@ def summary_table(norm_df):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
+# Convert max timestamp → python datetime.date (Streamlit-safe)
 max_d = df_all.index.max().to_pydatetime().date()
 
 filter_date = st.sidebar.date_input(
