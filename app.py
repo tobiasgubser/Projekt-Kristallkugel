@@ -130,16 +130,3 @@ if show_corr:
 if show_raw:
     st.subheader("Raw Data")
     st.dataframe(df_all, use_container_width=True)
-
-das ist meine app.py
-
-im csv sende ich die dates gemäss screenshot, streammlit erkennt das als datatype "object"
-
-das ist meine requirements.txt
-streamlit
-pandas
-numpy
-
-
-ich will im streamlit dashboard einen datumsfilter
-plotly
