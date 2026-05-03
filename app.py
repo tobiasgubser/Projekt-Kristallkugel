@@ -16,12 +16,11 @@ st.set_page_config(
 @st.cache_resource
 def load_df_all():
     df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df["date"] = df["date"].dt.tz_convert(None)  # Zeitzone entfernen
     df = df.set_index("date")
     return df
 
 df_all = load_df_all()
-
-df_all.index = pd.to_datetime(df_all.index)
 
 # ---------------------------------------------------------
 # Helper functions
