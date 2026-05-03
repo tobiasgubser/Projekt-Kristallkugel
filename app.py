@@ -15,7 +15,8 @@ st.set_page_config(
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df = pd.read_csv("df_all.csv")
+    df["date"] = pd.to_datetime(df["date"], errors="raise")
     df = df.set_index("date")
     return df
 
