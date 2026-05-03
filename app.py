@@ -21,7 +21,7 @@ def load_df_all():
 
 df_all = load_df_all()
 
-df_all.index = df_all.index.tz_localize(None)
+df_all.index = pd.to_datetime(df_all.index)
 
 # ---------------------------------------------------------
 # Helper functions
