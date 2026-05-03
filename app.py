@@ -24,6 +24,10 @@ def load_df_all():
 
 df_all = load_df_all()
 
+st.write("Index dtype:", df_all.index.dtype)
+st.write(df_all.index[:5])
+
+
 # ---------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------
