@@ -26,8 +26,7 @@ def load_df_all():
 
     # Als Index setzen
     df = df.set_index("date")
-    df = df.sort_index()
-
+    df.index = df.index.to_pydatetime()
     return df
 
 df_all = load_df_all()
@@ -66,7 +65,7 @@ def summary_table(norm_df):
 st.sidebar.header("Settings")
 
 # Convert max timestamp → python datetime.date (Streamlit-safe)
-max_d = df_all.index.max().to_pydatetime().date()
+max_d = df_all.index.max().date()
 
 filter_date = st.sidebar.date_input(
     "Zeige Daten bis:",
