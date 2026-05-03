@@ -15,21 +15,8 @@ st.set_page_config(
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv")
-
-    # 1) Datetime sauber parsen (inkl. +01:00)
-    df["date"] = pd.to_datetime(df["date"], errors="coerce")
-
-    # 2) Falls keine Zeitzone vorhanden → UTC setzen
-    if df["date"].dt.tz is None:
-        df["date"] = df["date"].dt.tz_localize("UTC")
-
-    # 3) In Schweizer Zeit konvertieren
-    df["date"] = df["date"].dt.tz_convert("Europe/Zurich")
-
-    # 4) Index setzen
+    df = pd.read_csv("df_all.csv", parse_dates=["date"])
     df = df.set_index("date")
-
     return df
 
 df_all = load_df_all()
@@ -63,16 +50,6 @@ def summary_table(norm_df):
 # Sidebar
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
-
-min_date = df_all.index.min().date()
-max_date = df_all.index.max().date()
-
-stichtag = st.sidebar.date_input(
-    "Stichtag",
-    value=max_date,
-    min_value=min_date,
-    max_value=max_date,
-)
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
@@ -153,3 +130,16 @@ if show_corr:
 if show_raw:
     st.subheader("Raw Data")
     st.dataframe(df_all, use_container_width=True)
+
+das ist meine app.py
+
+im csv sende ich die dates gemäss screenshot, streammlit erkennt das als datatype "object"
+
+das ist meine requirements.txt
+streamlit
+pandas
+numpy
+
+
+ich will im streamlit dashboard einen datumsfilter
+plotly
