@@ -53,9 +53,9 @@ st.sidebar.header("Settings")
 
 filter_date = st.sidebar.date_input(
     "Zeige Daten bis:",
-    value=pd.to_datetime("2025-12-31"),
-    min_value=pd.to_datetime("2025-01-01"),
-    max_value=df_all.index.max()
+    value=pd.to_datetime("2025-12-31").date(),
+    min_value=pd.to_datetime("2025-01-01").date(),
+    max_value=df_all.index.max().date()
 )
 df_filtered = df_all.loc["2025-01-01":filter_date]
 
