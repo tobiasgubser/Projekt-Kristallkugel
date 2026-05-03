@@ -16,10 +16,14 @@ st.set_page_config(
 @st.cache_resource
 def load_df_all():
     df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df['date'] = pd.to_datetime(df['date'])
     df = df.set_index("date")
     return df
 
 df_all = load_df_all()
+
+st.write("Index dtype:", df_all.index.dtype)
+st.write(df_all.index[:5])
 
 # ---------------------------------------------------------
 # Helper functions
