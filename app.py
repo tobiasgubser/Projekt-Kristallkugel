@@ -16,14 +16,18 @@ st.set_page_config(
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df = pd.read_csv("df_all.csv")
 
-    # Falls Zeitzone vorhanden → entfernen
-    if df["date"].dt.tz is not None:
-        df["date"] = df["date"].dt.tz_convert(None)
+    # Strings wie "2025-01-03 00:00:00+01:00" korrekt einlesen
+    df["date"] = pd.to_datetime(df["date"], utc=True)
 
+    # Zeitzone entfernen OHNE Verschiebung
+    df["date"] = df["date"].dt.tz_convert(None)
+
+    # Als Index setzen
     df = df.set_index("date")
     df = df.sort_index()
+
     return df
 
 df_all = load_df_all()
