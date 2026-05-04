@@ -39,17 +39,6 @@ df_news = load_df_news()
 def get_numeric_cols(df):
     return df.select_dtypes(include=[np.number]).columns.tolist()
 
-def normalize(df):
-    return df.div(df.iloc[0])
-
-def compute_peer_deltas(norm_df):
-    deltas = {}
-    for col in norm_df.columns:
-        peers = norm_df.drop(columns=[col])
-        peer_avg = peers.mean(axis=1)
-        deltas[col] = norm_df[col] - peer_avg
-    return pd.DataFrame(deltas)
-
 def summary_table(norm_df):
     last = norm_df.iloc[-1]
     df = pd.DataFrame({
@@ -102,14 +91,6 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize(df_all[selected_cols])
-deltas = compute_peer_deltas(norm)
-
-selected_var = st.sidebar.selectbox(
-    "Variable for peer comparison",
-    options=selected_cols,
-)
-
 show_corr = st.sidebar.checkbox("Show correlation matrix")
 show_raw = st.sidebar.checkbox("Show raw data")
 
@@ -128,9 +109,6 @@ for col in selected_cols:
         c1.metric("YTD", f"{perf_ytd:.2f}%")
         c2.metric("1 Woche", f"{perf_week:.2f}%")
         c3.metric("1 Tag", f"{perf_day:.2f}%")
-
-st.subheader("Manager Summary Table")
-st.dataframe(summary_table(norm), use_container_width=True)
 
 st.subheader("Normalized Performance (start = 1)")
 fig_norm = px.line(
