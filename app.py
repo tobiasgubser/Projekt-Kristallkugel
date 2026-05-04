@@ -47,9 +47,9 @@ def summary_table(norm_df):
     })
     return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
 
-def compute_performance(col, stichtag):
+def compute_performance(col, stichindex):
     # Aktueller Wert
-    v_now = df_all.loc[stichtag, col]
+    v_now = df_all.loc[stichindex, col]
 
     # --- YTD ---
     ytd_start = df_all.index.min()
@@ -57,13 +57,13 @@ def compute_performance(col, stichtag):
     perf_ytd = (v_now / v_ytd - 1) * 100
 
     # --- 1 Woche ---
-    week_ago = stichtag - pd.Timedelta(days=7)
+    week_ago = stichindex - pd.Timedelta(days=7)
     week_ago = df_all.index[df_all.index <= week_ago].max()  # letzter Handelstag davor
     v_week = df_all.loc[week_ago, col]
     perf_week = (v_now / v_week - 1) * 100
 
     # --- 1 Tag ---
-    prev_day = df_all.index[df_all.index < stichtag].max()
+    prev_day = df_all.index[df_all.index < stichindex].max()
     v_prev = df_all.loc[prev_day, col]
     perf_day = (v_now / v_prev - 1) * 100
 
@@ -80,6 +80,7 @@ stichtag = st.sidebar.date_input(
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
+stichindex = pd.Timestamp(stichtag).tz_localize("Europe/Zurich")
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
