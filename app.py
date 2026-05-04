@@ -149,42 +149,26 @@ if show_corr:
 st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date >= stichtag]
 df_news_filtered = df_news_filtered.reset_index(drop=True)
-
-# HTML für alle Cards sammeln
-cards_html = ""
 for _, row in df_news_filtered.iterrows():
-    cards_html += f"""
+    st.markdown(
+        f"""
         <div style="
-            background-color: white;
+            background-color: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 12px;
         ">
-            <div style="font-size: 13px; font-weight: 600; color: #444;">
+            <div style="font-size: 13px; font-weight: 600; color: #555;">
                 {row['category']}
             </div>
-            <div style="font-size: 15px; margin-top: 4px; line-height: 1.5;">
+            <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
                 {row['text']}
             </div>
         </div>
-    """
-
-# Gesamten Rahmen + Cards in EINEM HTML-Block rendern
-full_html = f"""
-<div style="
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: #fafafa;
-    margin-top: 20px;
-">
-    <h3 style="margin-top: 0; margin-bottom: 16px;">Newsmeldungen des Tages</h3>
-    {cards_html}
-</div>
-"""
-
-st.markdown(full_html, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 if show_raw:
     st.subheader("Raw Data")
