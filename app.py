@@ -22,6 +22,7 @@ def load_df_all():
     return df
 
 df_all = load_df_all()
+print(df.columns.tolist())
 
 @st.cache_resource
 def load_df_news():
@@ -32,8 +33,6 @@ def load_df_news():
     return df
 
 df_news = load_df_news()
-import os
-st.write("Files in working directory:", os.listdir("."))
 
 # ---------------------------------------------------------
 # Helper functions
