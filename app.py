@@ -151,19 +151,17 @@ df_news_filtered = df_news[df_news.index.date == stichtag]
 df_news_filtered = df_news_filtered[["category", "text"]]
 st.data_editor(
     df_news_filtered,
-    use_container_width=True,
     hide_index=True,
+    use_container_width=True,
     column_config={
-        "text": st.column_config.TextColumn(
-            "text",
-            help="Newstext",
-            width="medium",
-            max_chars=None,
-            wrap_text=True
-        ),
         "category": st.column_config.TextColumn(
             "category",
             width="small",
+            wrap_text=True
+        ),
+        "text": st.column_config.TextColumn(
+            "text",
+            width="large",
             wrap_text=True
         )
     }
