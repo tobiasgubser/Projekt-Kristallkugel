@@ -147,7 +147,7 @@ if show_corr:
     st.plotly_chart(fig_corr, use_container_width=True)
 
 st.subheader("Newsmeldungen des Tages")
-df_news_filtered = df_news[df_news.index.date = stichtag]
+df_news_filtered = df_news[df_news.index.date == stichtag]
 st.dataframe(
     df_news_filtered,
     use_container_width=True
