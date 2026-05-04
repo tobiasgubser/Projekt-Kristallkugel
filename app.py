@@ -120,7 +120,7 @@ st.title("📊 SPI Case Study Dashboard (df_all)")
 
 st.subheader("Performance bis Stichtag")
 cols = st.columns(3)
-for col in selected_vars:
+for col in selected_cols:
     perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
     with st.container():
         st.markdown(f"### {col}")
