@@ -58,6 +58,28 @@ def summary_table(norm_df):
     })
     return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
 
+def compute_performance(col, stichtag):
+    # Aktueller Wert
+    v_now = df_all.loc[stichtag, col]
+
+    # --- YTD ---
+    ytd_start = df_all.index.min()
+    v_ytd = df_all.loc[ytd_start, col]
+    perf_ytd = (v_now / v_ytd - 1) * 100
+
+    # --- 1 Woche ---
+    week_ago = stichtag - pd.Timedelta(days=7)
+    week_ago = df_all.index[df_all.index <= week_ago].max()  # letzter Handelstag davor
+    v_week = df_all.loc[week_ago, col]
+    perf_week = (v_now / v_week - 1) * 100
+
+    # --- 1 Tag ---
+    prev_day = df_all.index[df_all.index < stichtag].max()
+    v_prev = df_all.loc[prev_day, col]
+    perf_day = (v_now / v_prev - 1) * 100
+
+    return perf_ytd, perf_week, perf_day
+
 # ---------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------
@@ -72,8 +94,8 @@ stichtag = st.sidebar.date_input(
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
-    options=["SPI (%)", "Banken (%)", "Finanzen (%)", "Gesundheit (%)", "Lebensmittel (%)", "Versicherungen (%)"],
-    default=["SPI (%)"],
+    options=["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"],
+    default=["SPI"],
 )
 
 if not selected_cols:
@@ -95,6 +117,17 @@ show_raw = st.sidebar.checkbox("Show raw data")
 # Layout
 # ---------------------------------------------------------
 st.title("📊 SPI Case Study Dashboard (df_all)")
+
+st.subheader("Performance bis Stichtag")
+cols = st.columns(3)
+for col in selected_vars:
+    perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
+    with st.container():
+        st.markdown(f"### {col}")
+        c1, c2, c3 = st.columns(3)
+        c1.metric("YTD", f"{perf_ytd:.2f}%")
+        c2.metric("1 Woche", f"{perf_week:.2f}%")
+        c3.metric("1 Tag", f"{perf_day:.2f}%")
 
 st.subheader("Manager Summary Table")
 st.dataframe(summary_table(norm), use_container_width=True)
