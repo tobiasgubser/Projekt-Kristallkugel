@@ -139,7 +139,7 @@ cols = st.columns(3)
 
 for col in selected_cols:
     perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
-    nominal = df_all.loc[df_all.index.date == stichtag.date(), col].iloc[0]
+    nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
 
     def fmt(value):
         arrow = "⬆️" if value >= 0 else "⬇️"
