@@ -82,7 +82,7 @@ stichtag = st.sidebar.date_input(
 )
 
 # Falls der Tag kein Handelstag ist → letzten Handelstag nehmen
-stichindex = pd.Timestamp(stichtag).tz_localize("Europe/Zurich")
+stichindex = pd.to_datetime(stichtag).tz_localize("Europe/Zurich")
 if stichindex not in df_all.index:
     stichindex = df_all.index[df_all.index < stichindex].max()
 
