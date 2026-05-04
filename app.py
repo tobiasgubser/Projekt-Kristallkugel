@@ -152,7 +152,7 @@ df_news_filtered = df_news_filtered[["category", "text"]]
 st.dataframe(
     df_news_filtered,
     use_container_width=True,
-    hide_index=true
+    hide_index=True
 )
 
 if show_raw:
