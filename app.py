@@ -152,7 +152,7 @@ df_news_filtered = df_news_filtered[["category", "text"]]
 st.data_editor(
     df_news_filtered,
     use_container_width=True,
-    hide_index=True
+    hide_index=True,
     column_config={
         "text": st.column_config.TextColumn(
             "text",
