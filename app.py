@@ -91,7 +91,7 @@ stichtag = st.sidebar.date_input(
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
-stichtag = pd.Timestamp(stichtag).tz_localize("Europe/Zurich")
+stichtag = df_all.index[df_all.index <= stichtag].max()
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
@@ -103,7 +103,7 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize([selected_cols])
+norm = normalize(df_all[selected_cols])
 deltas = compute_peer_deltas(norm)
 
 selected_var = st.sidebar.selectbox(
