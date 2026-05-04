@@ -118,6 +118,9 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
+st.write("Selected:", selected_cols)
+st.write("Available:", df_all.columns.tolist())
+
 norm = normalize(df_all[selected_cols])
 deltas = compute_peer_deltas(norm)
 
