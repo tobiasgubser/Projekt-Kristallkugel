@@ -148,6 +148,8 @@ if show_corr:
 
 st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date == stichtag]
+df_news_filtered = df_news_filtered.reset_index(drop=True)
+df_news_filtered = df_news_filtered[["category", "text"]]
 st.dataframe(
     df_news_filtered,
     use_container_width=True
