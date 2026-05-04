@@ -36,17 +36,6 @@ df_news = load_df_news()
 # ---------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------
-def get_numeric_cols(df):
-    return df.select_dtypes(include=[np.number]).columns.tolist()
-
-def summary_table(norm_df):
-    last = norm_df.iloc[-1]
-    df = pd.DataFrame({
-        "Variable": last.index,
-        "Performance (%)": (last.values - 1) * 100,
-    })
-    return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
-
 def compute_performance(col, stichindex):
     # Aktueller Wert
     v_now = df_all.loc[stichindex, col]
@@ -100,7 +89,6 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-show_corr = st.sidebar.checkbox("Show correlation matrix")
 show_raw = st.sidebar.checkbox("Show raw data")
 
 # ---------------------------------------------------------
@@ -118,53 +106,6 @@ for col in selected_cols:
         c1.metric("YTD", f"{perf_ytd:.2f}%")
         c2.metric("1 Woche", f"{perf_week:.2f}%")
         c3.metric("1 Tag", f"{perf_day:.2f}%")
-
-st.subheader("Normalized Performance (start = 1)")
-fig_norm = px.line(
-    norm,
-    labels={"value": "Normalized value", "index": "Date"},
-)
-fig_norm.update_layout(height=500, legend_title_text="")
-st.plotly_chart(fig_norm, use_container_width=True)
-
-st.subheader(f"{selected_var} vs Peer Average")
-peers = norm.drop(columns=[selected_var])
-peer_avg = peers.mean(axis=1)
-
-df_plot = pd.DataFrame({
-    "Date": norm.index,
-    selected_var: norm[selected_var],
-    "Peer average": peer_avg,
-})
-
-fig_peer = px.line(
-    df_plot,
-    x="Date",
-    y=[selected_var, "Peer average"],
-)
-fig_peer.update_layout(height=400, legend_title_text="")
-st.plotly_chart(fig_peer, use_container_width=True)
-
-st.subheader(f"Delta: {selected_var} minus Peer Average")
-fig_delta = px.area(
-    deltas,
-    x=deltas.index,
-    y=selected_var,
-)
-fig_delta.update_layout(height=300, legend_title_text="")
-st.plotly_chart(fig_delta, use_container_width=True)
-
-if show_corr:
-    st.subheader("Correlation Matrix")
-    corr = df_all[selected_cols].corr()
-    fig_corr = px.imshow(
-        corr,
-        text_auto=True,
-        aspect="auto",
-        color_continuous_scale="RdBu_r",
-    )
-    fig_corr.update_layout(height=600)
-    st.plotly_chart(fig_corr, use_container_width=True)
 
 st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date >= stichtag]
