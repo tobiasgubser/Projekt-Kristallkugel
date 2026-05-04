@@ -215,7 +215,7 @@ c1, c2 = st.columns(2)
 c1.metric("Trump Posts", trump_count)
 c2.metric("Newsmeldungen", events_count)
 
-df_news_filtered = df_news[df_news.index.date >= stichtag]
+df_news_filtered = df_news[df_news.index.date == stichtag]
 for _, row in df_news_filtered.iterrows():
     st.markdown(
         f"""
