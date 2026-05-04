@@ -155,7 +155,7 @@ for col in selected_cols:
 
     st.markdown(f"### {col}")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Stand", f"{nominal:,.2f}")
+    c1.metric("Stand", f"{nominal:,.2f}", delta="0.00%", delta_color="off")
     c2.metric("YTD", "", delta_ytd, delta_color=color_ytd)
     c3.metric("1 Woche", "", delta_week, delta_color=color_week)
     c4.metric("1 Tag", "", delta_day, delta_color=color_day)
