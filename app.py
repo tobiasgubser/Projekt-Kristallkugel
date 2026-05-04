@@ -59,8 +59,22 @@ def summary_table(norm_df):
     return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
 
 def compute_performance(col, stichtag):
+    # --- Stichtag als date sicherstellen ---
+    if isinstance(stichtag, pd.Timestamp):
+        stichtag = stichtag.date()
+
+    # --- Index in date umwandeln für Vergleich ---
+    idx_dates = df_all.index.date
+
+    # Handelstag bestimmen: letzter Tag <= stichtag
+    mask = idx_dates <= stichtag
+    if not mask.any():
+        return np.nan, np.nan, np.nan  # falls vor erstem Handelstag
+
+    stichtag_idx = df_all.index[mask].max()
+
     # Aktueller Wert
-    v_now = df_all.loc[stichtag, col]
+    v_now = df_all.loc[stichtag_idx, col]
 
     # --- YTD ---
     ytd_start = df_all.index.min()
@@ -68,14 +82,16 @@ def compute_performance(col, stichtag):
     perf_ytd = (v_now / v_ytd - 1) * 100
 
     # --- 1 Woche ---
-    week_ago = stichtag - pd.Timedelta(days=7)
-    week_ago = df_all.index[df_all.index <= week_ago].max()  # letzter Handelstag davor
-    v_week = df_all.loc[week_ago, col]
+    week_ago_date = stichtag - pd.Timedelta(days=7).to_pytimedelta()
+    mask_week = idx_dates <= week_ago_date
+    week_idx = df_all.index[mask_week].max()
+    v_week = df_all.loc[week_idx, col]
     perf_week = (v_now / v_week - 1) * 100
 
     # --- 1 Tag ---
-    prev_day = df_all.index[df_all.index < stichtag].max()
-    v_prev = df_all.loc[prev_day, col]
+    mask_prev = idx_dates < stichtag
+    prev_idx = df_all.index[mask_prev].max()
+    v_prev = df_all.loc[prev_idx, col]
     perf_day = (v_now / v_prev - 1) * 100
 
     return perf_ytd, perf_week, perf_day
@@ -91,7 +107,6 @@ stichtag = st.sidebar.date_input(
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
-stichtag = df_all.index[df_all.index <= stichtag].max()
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
@@ -182,7 +197,6 @@ if show_corr:
 
 st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date >= stichtag]
-df_news_filtered = df_news_filtered.reset_index(drop=True)
 for _, row in df_news_filtered.iterrows():
     st.markdown(
         f"""
