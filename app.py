@@ -150,7 +150,7 @@ st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date >= stichtag]
 df_news_filtered = df_news_filtered.reset_index(drop=True)
 
-# HTML für alle Meldungen aufbauen
+# HTML für alle Cards sammeln
 cards_html = ""
 for _, row in df_news_filtered.iterrows():
     cards_html += f"""
@@ -170,7 +170,7 @@ for _, row in df_news_filtered.iterrows():
         </div>
     """
 
-# Alles in einen gemeinsamen Rahmen packen
+# Gesamten Rahmen + Cards in EINEM HTML-Block rendern
 full_html = f"""
 <div style="
     border: 2px solid #ccc;
@@ -185,8 +185,6 @@ full_html = f"""
 """
 
 st.markdown(full_html, unsafe_allow_html=True)
-
-
 
 if show_raw:
     st.subheader("Raw Data")
