@@ -22,7 +22,6 @@ def load_df_all():
     return df
 
 df_all = load_df_all()
-print(df_all.columns.tolist())
 
 @st.cache_resource
 def load_df_news():
