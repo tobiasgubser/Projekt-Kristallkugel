@@ -118,9 +118,6 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-st.write("Selected:", selected_cols)
-st.write("Available:", df_all.columns.tolist())
-
 norm = normalize(df_all[selected_cols])
 deltas = compute_peer_deltas(norm)
 
@@ -139,17 +136,26 @@ st.title("📊 SPI Case Study Dashboard (df_all)")
 
 st.subheader("Performance bis Stichtag")
 cols = st.columns(3)
+
 for col in selected_cols:
     perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
+    nominal = df_all.loc[df_all.index.date == stichtag.date(), col].iloc[0]
+
+    def fmt(value):
+        arrow = "⬆️" if value >= 0 else "⬇️"
+        color = "green" if value >= 0 else "red"
+        return f"<span style='color:{color}; font-weight:600;'>{arrow} {value:.2f}%</span>"
+
     with st.container():
         st.markdown(f"### {col}")
-        c1, c2, c3 = st.columns(3)
-        c1.metric("YTD", f"{perf_ytd:.2f}%")
-        c2.metric("1 Woche", f"{perf_week:.2f}%")
-        c3.metric("1 Tag", f"{perf_day:.2f}%")
-
-st.subheader("Manager Summary Table")
-st.dataframe(summary_table(norm), use_container_width=True)
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Stand", f"{nominal:,.2f}")
+        c2.markdown(fmt(perf_ytd), unsafe_allow_html=True)
+        c2.caption("YTD")
+        c3.markdown(fmt(perf_week), unsafe_allow_html=True)
+        c3.caption("1 Woche")
+        c4.markdown(fmt(perf_day), unsafe_allow_html=True)
+        c4.caption("1 Tag")
 
 st.subheader("Normalized Performance (start = 1)")
 fig_norm = px.line(
