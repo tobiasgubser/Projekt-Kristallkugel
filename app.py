@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# Load df_all (CSV statt Pickle)
+# Load Data
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
@@ -23,8 +23,15 @@ def load_df_all():
 
 df_all = load_df_all()
 
-st.write("Index dtype:", df_all.index.dtype)
-st.write(df_all.index[:5])
+@st.cache_resource
+def load_df_news():
+    df = pd.read_csv("df_news.tsv", sep="\t", parse_dates=["date"])
+    df["date"] = pd.to_datetime(df["date"], utc=True)
+    df["date"] = df["date"].dt.tz_convert("Europe/Zurich")
+    df = df.set_index("date")
+    return df
+
+df_news = load_df_news()
 
 # ---------------------------------------------------------
 # Helper functions
@@ -138,6 +145,13 @@ if show_corr:
     )
     fig_corr.update_layout(height=600)
     st.plotly_chart(fig_corr, use_container_width=True)
+
+st.subheader("Newsmeldungen des Tages")
+df_news_filtered = df_news[df_news.index.date = stichtag]
+st.dataframe(
+    df_news_filtered,
+    use_container_width=True
+)
 
 if show_raw:
     st.subheader("Raw Data")
