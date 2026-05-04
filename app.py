@@ -80,7 +80,12 @@ stichtag = st.sidebar.date_input(
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
+
+# Falls der Tag kein Handelstag ist → letzten Handelstag nehmen
 stichindex = pd.Timestamp(stichtag).tz_localize("Europe/Zurich")
+if stichindex not in df_all.index:
+    stichindex = df_all.index[df_all.index < stichindex].max()
+
 
 selected_cols = st.sidebar.multiselect(
     "Select variables",
