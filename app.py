@@ -103,7 +103,7 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize(df_all[selected_cols])
+norm = normalize([selected_cols])
 deltas = compute_peer_deltas(norm)
 
 selected_var = st.sidebar.selectbox(
