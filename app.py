@@ -150,19 +150,10 @@ st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date >= stichtag]
 df_news_filtered = df_news_filtered.reset_index(drop=True)
 
-st.markdown("""
-<div style="
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: #fafafa;
-    margin-top: 20px;
-">
-""", unsafe_allow_html=True)
-
+# HTML für alle Meldungen aufbauen
+cards_html = ""
 for _, row in df_news_filtered.iterrows():
-    st.markdown(
-        f"""
+    cards_html += f"""
         <div style="
             background-color: white;
             border: 1px solid #ddd;
@@ -177,11 +168,24 @@ for _, row in df_news_filtered.iterrows():
                 {row['text']}
             </div>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """
 
-st.markdown("</div>", unsafe_allow_html=True)
+# Alles in einen gemeinsamen Rahmen packen
+full_html = f"""
+<div style="
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fafafa;
+    margin-top: 20px;
+">
+    <h3 style="margin-top: 0; margin-bottom: 16px;">Newsmeldungen des Tages</h3>
+    {cards_html}
+</div>
+"""
+
+st.markdown(full_html, unsafe_allow_html=True)
+
 
 
 if show_raw:
