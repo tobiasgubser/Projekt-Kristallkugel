@@ -150,28 +150,39 @@ st.subheader("Newsmeldungen des Tages")
 df_news_filtered = df_news[df_news.index.date >= stichtag]
 df_news_filtered = df_news_filtered.reset_index(drop=True)
 
-st.write("### Newsmeldungen des Tages")
+st.markdown("""
+<div style="
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fafafa;
+    margin-top: 20px;
+">
+""", unsafe_allow_html=True)
 
 for _, row in df_news_filtered.iterrows():
     st.markdown(
         f"""
         <div style="
-            background-color: #f8f9fa;
+            background-color: white;
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 12px;
         ">
-            <div style="font-size: 13px; font-weight: 600; color: #555;">
+            <div style="font-size: 13px; font-weight: 600; color: #444;">
                 {row['category']}
             </div>
-            <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
+            <div style="font-size: 15px; margin-top: 4px; line-height: 1.5;">
                 {row['text']}
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
+
+st.markdown("</div>", unsafe_allow_html=True)
+
 
 if show_raw:
     st.subheader("Raw Data")
