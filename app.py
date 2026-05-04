@@ -147,25 +147,31 @@ if show_corr:
     st.plotly_chart(fig_corr, use_container_width=True)
 
 st.subheader("Newsmeldungen des Tages")
-df_news_filtered = df_news[df_news.index.date == stichtag]
-df_news_filtered = df_news_filtered[["category", "text"]]
-st.data_editor(
-    df_news_filtered,
-    hide_index=True,
-    use_container_width=True,
-    column_config={
-        "category": st.column_config.TextColumn(
-            "category",
-            width="small",
-            wrap_text=True
-        ),
-        "text": st.column_config.TextColumn(
-            "text",
-            width="large",
-            wrap_text=True
-        )
-    }
-)
+df_news_filtered = df_news[df_news.index.date >= stichtag]
+df_news_filtered = df_news_filtered.reset_index(drop=True)
+
+st.write("### Newsmeldungen des Tages")
+
+for _, row in df_news_filtered.iterrows():
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+        ">
+            <div style="font-size: 13px; font-weight: 600; color: #555;">
+                {row['category']}
+            </div>
+            <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
+                {row['text']}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 if show_raw:
     st.subheader("Raw Data")
