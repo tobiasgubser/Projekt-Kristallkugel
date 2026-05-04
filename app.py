@@ -135,27 +135,30 @@ show_raw = st.sidebar.checkbox("Show raw data")
 st.title("📊 SPI Case Study Dashboard (df_all)")
 
 st.subheader("Performance bis Stichtag")
-cols = st.columns(3)
 
 for col in selected_cols:
     perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
     nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
 
-    def fmt(value):
-        arrow = "⬆️" if value >= 0 else "⬇️"
-        color = "green" if value >= 0 else "red"
-        return f"<span style='color:{color}; font-weight:600;'>{arrow} {value:.2f}%</span>"
+    def metric_block(label, value):
+        delta = f"{value:.2f}%"
+        delta_color = "normal"
+        if value > 0:
+            delta_color = "normal"   # grün
+        elif value < 0:
+            delta_color = "inverse"  # rot
+        return delta, delta_color
 
-    with st.container():
-        st.markdown(f"### {col}")
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Stand", f"{nominal:,.2f}")
-        c2.markdown(fmt(perf_ytd), unsafe_allow_html=True)
-        c2.caption("YTD")
-        c3.markdown(fmt(perf_week), unsafe_allow_html=True)
-        c3.caption("1 Woche")
-        c4.markdown(fmt(perf_day), unsafe_allow_html=True)
-        c4.caption("1 Tag")
+    delta_ytd, color_ytd = metric_block("YTD", perf_ytd)
+    delta_week, color_week = metric_block("1 Woche", perf_week)
+    delta_day, color_day = metric_block("1 Tag", perf_day)
+
+    st.markdown(f"### {col}")
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Stand", f"{nominal:,.2f}")
+    c2.metric("YTD", "", delta_ytd, delta_color=color_ytd)
+    c3.metric("1 Woche", "", delta_week, delta_color=color_week)
+    c4.metric("1 Tag", "", delta_day, delta_color=color_day)
 
 st.subheader("Normalized Performance (start = 1)")
 fig_norm = px.line(
