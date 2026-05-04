@@ -209,7 +209,7 @@ if show_corr:
 
 st.subheader("Newsmeldungen des Tages")
 trump_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Trump Post")].shape[0]
-events_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Newsmeldungen")].shape[0]
+events_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Newsmeldung")].shape[0]
 
 c1, c2 = st.columns(2)
 c1.metric("Trump Posts", trump_count)
