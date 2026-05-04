@@ -74,6 +74,7 @@ def compute_performance(col, stichindex):
 # ---------------------------------------------------------
 st.sidebar.header("Settings")
 
+# Sidebar input
 stichtag = st.sidebar.date_input(
     "Stichtag",
     value=df_all.index.max().date(),
@@ -81,10 +82,12 @@ stichtag = st.sidebar.date_input(
     max_value=df_all.index.max().date(),
 )
 
-# Falls der Tag kein Handelstag ist → letzten Handelstag nehmen
-stichindex = pd.to_datetime(stichtag).tz_localize("Europe/Zurich")
-if stichindex not in df_all.index:
-    stichindex = df_all.index[df_all.index < stichindex].max()
+ts = pd.Timestamp(stichtag)
+mask = df_all.index.date == ts.date()
+if mask.any():
+    stichindex = df_all.index[mask][0]
+else:
+    stichindex = df_all.index[df_all.index.date < ts.date()].max()
 
 
 selected_cols = st.sidebar.multiselect(
