@@ -146,6 +146,10 @@ stichtag = st.sidebar.date_input(
     max_value=df_all.index.max().date(),
 )
 
+if stichtag not in df_all.index:
+    st.warning("Wähle bitte einen SPI Handelstag aus (keine Wochenenden / Feiertage).")
+    st.stop()
+
 selected_cols = st.sidebar.multiselect(
     "Select variables",
     options=["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"],
