@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="SPI Case Study Dashboard",
-    page_icon="📈",
+    page_icon="🔮",
     layout="wide",
 )
 
@@ -170,11 +170,12 @@ show_raw = st.sidebar.checkbox("Show raw data")
 # ---------------------------------------------------------
 # Layout
 # ---------------------------------------------------------
-st.title("📊 SPI Case Study Dashboard (df_all)")
-temp = df_all.loc[stichtag_idx, "meteo_Temperatur (°C)"]
-rain = df_all.loc[stichtag_idx, "meteo_Niederschlagsdauer (min)"]
-radiation = df_all.loc[stichtag_idx, "meteo_Globalstrahlung (W/m²)"]
-wind = df_all.loc[stichtag_idx, "meteo_Windgeschwindigkeit (km/h)"]
+st.title("🔮 Kristallkugel")
+
+temp = df_all.loc[df_all.index.date == stichtag, "meteo_Temperatur (°C)"].iloc[0]
+rain = df_all.loc[df_all.index.date == stichtag, "meteo_Niederschlagsdauer (min)"].iloc[0]
+radiation = df_all.loc[df_all.index.date == stichtag, "meteo_Globalstrahlung (W/m²)"].iloc[0]
+wind = df_all.loc[df_all.index.date == stichtag, "meteo_Windgeschwindigkeit (km/h)"].iloc[0]
 icon = weather_icon(temp, rain, radiation, wind)
 st.markdown(weather_kpi("Temperatur", temp, "°C", icon), unsafe_allow_html=True)
 
