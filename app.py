@@ -87,7 +87,7 @@ def compute_performance(col, stichtag):
     week_idx = df_all.index[mask_week].max()
     v_week = df_all.loc[week_idx, col]
     perf_week = (v_now / v_week - 1) * 100
-
+    
     # --- 1 Tag ---
     mask_prev = idx_dates < stichtag
     prev_idx = df_all.index[mask_prev].max()
@@ -95,6 +95,44 @@ def compute_performance(col, stichtag):
     perf_day = (v_now / v_prev - 1) * 100
 
     return perf_ytd, perf_week, perf_day
+
+def weather_kpi(title, value, unit, icon):
+    return f"""
+    <div style="
+        border:1px solid #ccc;
+        border-radius:8px;
+        padding:10px 14px;
+        background-color:#f7f7f7;
+        text-align:center;
+        margin-bottom:12px;
+    ">
+        <div style="font-size:12px; color:#666; font-weight:600;">
+            {icon} {title}
+        </div>
+        <div style="font-size:20px; font-weight:700; margin-top:4px;">
+            {value:.2f} {unit}
+        </div>
+    </div>
+    """
+
+def weather_icon(temp, rain_min, radiation, wind):
+    # Regen
+    if rain_min > 0:
+        return "🌧️"
+    # Schnee (falls du später Temperatur < 0 nutzt)
+    if temp < 0:
+        return "❄️"
+    # Sonne
+    if radiation > 200:
+        return "☀️"
+    # Bewölkt
+    if radiation > 50:
+        return "⛅"
+    # Windig
+    if wind > 25:
+        return "💨"
+    # Standard
+    return "🌥️"
 
 # ---------------------------------------------------------
 # Sidebar
@@ -133,9 +171,14 @@ show_raw = st.sidebar.checkbox("Show raw data")
 # Layout
 # ---------------------------------------------------------
 st.title("📊 SPI Case Study Dashboard (df_all)")
+temp = df_all.loc[stichtag_idx, "meteo_Temperatur (°C)"]
+rain = df_all.loc[stichtag_idx, "meteo_Niederschlagsdauer (min)"]
+radiation = df_all.loc[stichtag_idx, "meteo_Globalstrahlung (W/m²)"]
+wind = df_all.loc[stichtag_idx, "meteo_Windgeschwindigkeit (km/h)"]
+icon = weather_icon(temp, rain, radiation, wind)
+st.markdown(weather_kpi("Temperatur", temp, "°C", icon), unsafe_allow_html=True)
 
 st.subheader("Performance bis Stichtag")
-
 for col in selected_cols:
     perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
     nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
