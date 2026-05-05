@@ -107,10 +107,10 @@ def weather_kpi(value, icon):
         margin-bottom:12px;
     ">
         <div style="font-size:12px; color:#666; font-weight:600;">
-            "aktuelles Wetter
+            aktuelles Wetter
         </div>
         <div style="font-size:20px; font-weight:700; margin-top:4px;">
-            {icon} {value:.2f} "°C"
+            {icon} {value:.2f} °C
         </div>
     </div>
     """
