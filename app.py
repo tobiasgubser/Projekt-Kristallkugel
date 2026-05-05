@@ -58,16 +58,16 @@ def summary_table(norm_df):
     })
     return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
 
+# --- Index in date umwandeln für Vergleich ---
+handelstage = df_all.index.date
+
 def compute_performance(col, stichtag):
     # --- Stichtag als date sicherstellen ---
     if isinstance(stichtag, pd.Timestamp):
         stichtag = stichtag.date()
 
-    # --- Index in date umwandeln für Vergleich ---
-    idx_dates = df_all.index.date
-
     # Handelstag bestimmen: letzter Tag <= stichtag
-    mask = idx_dates <= stichtag
+    mask = handelstage <= stichtag
     if not mask.any():
         return np.nan, np.nan, np.nan  # falls vor erstem Handelstag
 
@@ -83,13 +83,13 @@ def compute_performance(col, stichtag):
 
     # --- 1 Woche ---
     week_ago_date = stichtag - pd.Timedelta(days=7).to_pytimedelta()
-    mask_week = idx_dates <= week_ago_date
+    mask_week = handelstage <= week_ago_date
     week_idx = df_all.index[mask_week].max()
     v_week = df_all.loc[week_idx, col]
     perf_week = (v_now / v_week - 1) * 100
     
     # --- 1 Tag ---
-    mask_prev = idx_dates < stichtag
+    mask_prev = handelstage < stichtag
     prev_idx = df_all.index[mask_prev].max()
     v_prev = df_all.loc[prev_idx, col]
     perf_day = (v_now / v_prev - 1) * 100
@@ -146,7 +146,7 @@ stichtag = st.sidebar.date_input(
     max_value=df_all.index.max().date(),
 )
 
-if stichtag not in df_all.index:
+if stichtag not in handelstage:
     st.warning("Wähle bitte einen SPI Handelstag aus (keine Wochenenden / Feiertage).")
     st.stop()
 
