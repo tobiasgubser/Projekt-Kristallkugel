@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 st.set_page_config(
-    page_title="SPI Case Study Dashboard",
+    page_title="Kristallkugel",
     page_icon="🔮",
     layout="wide",
 )
@@ -96,7 +96,7 @@ def compute_performance(col, stichtag):
 
     return perf_ytd, perf_week, perf_day
 
-def weather_kpi(title, value, unit, icon):
+def weather_kpi(value, icon):
     return f"""
     <div style="
         border:1px solid #ccc;
@@ -107,10 +107,10 @@ def weather_kpi(title, value, unit, icon):
         margin-bottom:12px;
     ">
         <div style="font-size:12px; color:#666; font-weight:600;">
-            {icon} {title}
+            "aktuelles Wetter
         </div>
         <div style="font-size:20px; font-weight:700; margin-top:4px;">
-            {value:.2f} {unit}
+            {icon} {value:.2f} "°C"
         </div>
     </div>
     """
@@ -181,7 +181,7 @@ rain = df_all.loc[df_all.index.date == stichtag, "meteo_Niederschlagsdauer (min)
 radiation = df_all.loc[df_all.index.date == stichtag, "meteo_Globalstrahlung (W/m²)"].iloc[0]
 wind = df_all.loc[df_all.index.date == stichtag, "meteo_Windgeschwindigkeit (km/h)"].iloc[0]
 icon = weather_icon(temp, rain, radiation, wind)
-st.markdown(weather_kpi("Temperatur", temp, "°C", icon), unsafe_allow_html=True)
+st.markdown(weather_kpi(temp, icon), unsafe_allow_html=True)
 
 st.subheader("Performance bis Stichtag")
 for col in selected_cols:
