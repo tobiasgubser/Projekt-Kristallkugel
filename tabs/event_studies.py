@@ -27,7 +27,7 @@ def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_
     # Event-Date als Timestamp holen
     mask = handelstage <= event_date
     if not mask.any():
-        st.error("Für dieses Event-Datum existiert kein vorheriger Handelstag im df_all.")
+        st.warning("Für dieses Event-Datum existiert kein vorheriger Handelstag im df_all.")
         st.stop()
     event_ts = df_all.index[mask].max()
 
