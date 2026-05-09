@@ -49,13 +49,12 @@ st.sidebar.header("Settings")
 
 handelstage = df_all.index.date
 
-st.session_state.stichtag = st.sidebar.date_input(
+stichtag = st.sidebar.date_input(
     "Stichtag",
     value=df_all.index.max().date(),
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
-stichtag = st.session_state.stichtag
 if stichtag not in handelstage:
     st.warning("Wähle bitte einen SPI Handelstag aus (keine Wochenenden / Feiertage).")
     st.stop()
@@ -107,7 +106,7 @@ with tab_news:
 
 with tab_event:
     try:
-        render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study)
+        render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag)
     except Exception as e:
         st.error(f"Event-Studien Fehler: {str(e)}")
 
