@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study):
+def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag):
     """Render the Event Studies tab."""
     st.header("📉 Event-Studien")
 
@@ -12,10 +12,6 @@ def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_
         options=df_news["category"].unique().tolist()
     )
 
-    # Event-Datum auswählen
-    event_dates = df_news[df_news["category"] == event_type].index.date
-    event_date = st.selectbox("Event-Datum", sorted(event_dates))
-
     # Event-Fenster
     c1, c2 = st.columns(2)
     window_before = c1.number_input("Tage vor Event", min_value=1, max_value=10, value=3)
@@ -24,11 +20,12 @@ def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_
     # Variable auswählen
     col = st.selectbox("Variable für Event-Studie", selected_cols)
 
-    # Event-Date als Timestamp holen
-    mask = handelstage <= event_date
+    # Event-Date als Timestamp holen (nutze stichtag)
+    mask = handelstage <= stichtag
     if not mask.any():
-        st.warning("Für dieses Event-Datum existiert kein vorheriger Handelstag im df_all.")
-        st.stop()
+        st.warning("Für den Stichtag existiert kein vorheriger Handelstag im df_all.")
+        return
+    
     event_ts = df_all.index[mask].max()
 
     # Event-Studie berechnen
