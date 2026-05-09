@@ -292,9 +292,20 @@ with tab_news:
                 padding: 12px 16px;
                 margin-bottom: 12px;
             ">
-                <div style="font-size: 13px; font-weight: 600; color: #555;">
-                    {row['category']}
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #555;
+                ">
+                    <span>{row['category']}</span>
+                    <span style="font-size: 13px; color: #333;">
+                        {row['sentiment']:+.2f}
+                    </span>
                 </div>
+        
                 <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
                     {row['text']}
                 </div>
