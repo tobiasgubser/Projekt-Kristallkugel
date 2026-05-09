@@ -4,8 +4,7 @@ import numpy                  as np
 import plotly.express         as px
 import plotly.graph_objects   as go
 import utility                as ut
-import tabs
-
+from tabs.raw_data_intf import render_raw_data_tab
 
 st.set_page_config(
     page_title="Kristallkugel",
@@ -484,4 +483,5 @@ with tab_event:
     st.dataframe(result, use_container_width=True)
 
 # --- Raw Data ---
-tabs.raw_data_intf.render_raw_data_tab(df_all, stichtag)
+with tab_raw:
+    render_raw_data_tab(df_all, stichtag)
