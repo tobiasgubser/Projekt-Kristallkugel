@@ -88,20 +88,37 @@ tab_dashboard, tab_corr, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
 # Render Tabs
 # ---------------------------------------------------------
 with tab_dashboard:
-    render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage)
+    try:
+        render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage)
+    except Exception as e:
+        st.error(f"Dashboard Fehler: {str(e)}")
 
 with tab_corr:
-    render_corr_tab(df_all, selected_cols)
+    try:
+        render_corr_tab(df_all, selected_cols)
+    except Exception as e:
+        st.error(f"Korrelationen Fehler: {str(e)}")
 
 with tab_news:
-    render_news_tab(df_news, stichtag)
+    try:
+        render_news_tab(df_news, stichtag)
+    except Exception as e:
+        st.error(f"News Fehler: {str(e)}")
 
 with tab_event:
-    render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study)
+    try:
+        render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study)
+    except Exception as e:
+        st.error(f"Event-Studien Fehler: {str(e)}")
 
 with tab_forecast:
-    render_forecast_tab(df_all, selected_cols, forecast_series)
+    try:
+        render_forecast_tab(df_all, selected_cols, forecast_series)
+    except Exception as e:
+        st.error(f"Forecast Fehler: {str(e)}")
 
 with tab_raw:
-    render_raw_data_tab(df_all, stichtag)
-st.rerun()
+    try:
+        render_raw_data_tab(df_all, stichtag)
+    except Exception as e:
+        st.error(f"Raw Data Fehler: {str(e)}")
