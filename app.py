@@ -49,12 +49,13 @@ st.sidebar.header("Settings")
 
 handelstage = df_all.index.date
 
-stichtag = st.sidebar.date_input(
+st.session_state.stichtag = st.sidebar.date_input(
     "Stichtag",
     value=df_all.index.max().date(),
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
+stichtag = st.session_state.stichtag
 if stichtag not in handelstage:
     st.warning("Wähle bitte einen SPI Handelstag aus (keine Wochenenden / Feiertage).")
     st.stop()
