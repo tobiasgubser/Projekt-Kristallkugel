@@ -306,7 +306,14 @@ with tab_news:
                     </span>
                 </div>
         
-                <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
+                <div style="
+                    font-size: 15px;
+                    margin-top: 4px;
+                    line-height: 1.4;
+                    white-space: normal;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                ">
                     {row['text']}
                 </div>
             </div>
