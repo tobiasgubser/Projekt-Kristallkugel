@@ -4,6 +4,8 @@ import numpy                  as np
 import plotly.express         as px
 import plotly.graph_objects   as go
 import utility                as ut
+import tabs
+
 
 st.set_page_config(
     page_title="Kristallkugel",
@@ -481,9 +483,5 @@ with tab_event:
     st.subheader("Event-Fenster Daten")
     st.dataframe(result, use_container_width=True)
 
-# ---------------------------------------------------------
-# TAB – Raw Data
-# ---------------------------------------------------------
-with tab_raw:
-    st.header("📄 Raw Data")
-    st.dataframe(df_all.loc[df_all.index.date == stichtag].iloc[0], use_container_width=True)
+# --- Raw Data ---
+tabs.raw_data_intf.render_raw_data_tab(df_all, stichtag)
