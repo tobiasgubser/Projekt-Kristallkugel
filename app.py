@@ -120,6 +120,35 @@ def weather_icon(temp, rain_min, radiation, wind):
         return "💨"
     return "🌥️"
 
+def forecast_series(series, horizon=10, method="EMA", alpha=0.3):
+    """
+    Einfaches Forecasting:
+    - Naiv: letzter Wert fortgeschrieben
+    - EMA: exponentiell geglättete Fortschreibung
+    """
+    series = series.dropna()
+    if series.empty:
+        return pd.Series(dtype=float)
+
+    last_index = series.index[-1]
+    freq = pd.infer_freq(series.index)
+    if freq is None:
+        # fallback: tägliche Frequenz
+        freq = "D"
+
+    future_index = pd.date_range(start=last_index, periods=horizon+1, freq=freq)[1:]
+
+    if method == "Naiv":
+        forecast_values = np.repeat(series.iloc[-1], horizon)
+    elif method == "EMA":
+        ema = series.ewm(alpha=alpha, adjust=False).mean().iloc[-1]
+        # einfache Fortschreibung mit letztem EMA-Wert
+        forecast_values = np.repeat(ema, horizon)
+    else:
+        raise ValueError("Unknown method")
+
+    return pd.Series(forecast_values, index=future_index, name=series.name)
+
 # ---------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------
@@ -160,12 +189,12 @@ show_raw = st.sidebar.checkbox("Show raw data")
 # ---------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------
-tab_dashboard, tab_corr, tab_news, tab_raw = st.tabs(
-    ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "📄 Raw Data"]
+tab_dashboard, tab_corr, tab_news, tab_forecast, tab_raw = st.tabs(
+    ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "🔮 Forecast", "📄 Raw Data"]
 )
 
 # ---------------------------------------------------------
-# TAB 1 – Dashboard
+# TAB – Dashboard
 # ---------------------------------------------------------
 with tab_dashboard:
 
@@ -228,7 +257,7 @@ with tab_dashboard:
     st.plotly_chart(fig_delta, use_container_width=True)
 
 # ---------------------------------------------------------
-# TAB 2 – Korrelationen
+# TAB – Korrelationen
 # ---------------------------------------------------------
 with tab_corr:
     st.header("🔗 Korrelationen")
@@ -247,7 +276,7 @@ with tab_corr:
         st.info("Aktiviere 'Show correlation matrix' in der Sidebar.")
 
 # ---------------------------------------------------------
-# TAB 3 – News
+# TAB – News
 # ---------------------------------------------------------
 with tab_news:
     st.header("📰 Newsmeldungen des Tages")
@@ -282,7 +311,65 @@ with tab_news:
         )
 
 # ---------------------------------------------------------
-# TAB 4 – Raw Data
+# TAB – Forecast
+# ---------------------------------------------------------
+with tab_forecast:
+    st.header("🔮 Forecasting")
+
+    # Variable wählen
+    forecast_var = st.selectbox(
+        "Variable für Forecast",
+        options=selected_cols,
+        index=0,
+    )
+
+    # Horizon & Methode
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        horizon = st.number_input("Forecast-Horizont (Perioden)", min_value=1, max_value=60, value=10, step=1)
+    with c2:
+        method = st.selectbox("Methode", ["EMA", "Naiv"])
+    with c3:
+        alpha = st.slider("Alpha (für EMA)", min_value=0.05, max_value=0.9, value=0.3, step=0.05)
+
+    series = df_all[forecast_var]
+
+    # Forecast berechnen
+    forecast = forecast_series(series, horizon=horizon, method=method, alpha=alpha)
+
+    # Plot: Historie + Forecast
+    st.subheader(f"Historie und Forecast: {forecast_var}")
+
+    df_hist = series.to_frame(name="Historie")
+    df_fc = forecast.to_frame(name="Forecast")
+
+    df_plot_fc = pd.concat([df_hist, df_fc], axis=0)
+
+    fig_fc = px.line(
+        df_plot_fc,
+        x=df_plot_fc.index,
+        y=df_plot_fc.columns,
+        labels={"value": forecast_var, "index": "Datum"},
+    )
+
+    # Forecast-Teil hervorheben
+    fig_fc.add_vrect(
+        x0=forecast.index[0],
+        x1=forecast.index[-1],
+        fillcolor="orange",
+        opacity=0.1,
+        line_width=0,
+    )
+
+    fig_fc.update_layout(height=500, legend_title_text="")
+    st.plotly_chart(fig_fc, use_container_width=True)
+
+    # Tabelle
+    st.subheader("Forecast-Werte")
+    st.dataframe(forecast.to_frame(name=f"{forecast_var} Forecast"), use_container_width=True)
+
+# ---------------------------------------------------------
+# TAB – Raw Data
 # ---------------------------------------------------------
 with tab_raw:
     st.header("📄 Raw Data")
