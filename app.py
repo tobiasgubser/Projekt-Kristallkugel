@@ -103,3 +103,4 @@ with tab_forecast:
 
 with tab_raw:
     render_raw_data_tab(df_all, stichtag)
+st.rerun()
