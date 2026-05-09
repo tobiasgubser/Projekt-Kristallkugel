@@ -445,7 +445,11 @@ with tab_event:
     col = st.selectbox("Variable für Event-Studie", selected_cols)
 
     # Event-Date als Timestamp holen
-    event_ts = df_all[df_all.index.date == event_date].index[0]
+    mask = handelstage <= event_date
+    if not mask.any():
+        st.error("Für dieses Event-Datum existiert kein vorheriger Handelstag im df_all.")
+        st.stop()
+    event_ts = df_all.index[mask].max()
 
     # Event-Studie berechnen
     result = compute_event_study(df_all[selected_cols], col, event_ts, window_before, window_after)
