@@ -2,6 +2,7 @@
 # TAB – Raw Data
 # ---------------------------------------------------------
 import streamlit as st
+import pandas as pd
 
 def render_raw_data_tab(df_all, stichtag):
     st.write("Index sample:", df_all.index[:5])
