@@ -10,7 +10,7 @@ def render_raw_data_tab(df_all, stichtag):
 
     st.title("📄 Rohdaten")
 
-    df_stichtag = df_all.loc[df_all.index.date == stichtag]
+    df_stichtag = df_all.loc[df_all.index.floor("D") == stichtag]
 
     if df_stichtag.empty:
         st.warning("Keine Daten für diesen Stichtag.")
