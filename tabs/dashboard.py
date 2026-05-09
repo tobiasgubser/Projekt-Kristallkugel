@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from app_utils import weather_icon, weather_kpi
 
-def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance):
+def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage):
     """Render the Dashboard tab."""
     
     st.title("🔮 Kristallkugel")
@@ -13,13 +14,12 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     radiation = df_all.loc[df_all.index.date == stichtag, "meteo_Globalstrahlung (W/m²)"].iloc[0]
     wind = df_all.loc[df_all.index.date == stichtag, "meteo_Windgeschwindigkeit (km/h)"].iloc[0]
     
-    from app import weather_icon, weather_kpi
     icon = weather_icon(temp, rain, radiation, wind)
     st.markdown(weather_kpi(temp, icon), unsafe_allow_html=True)
 
     st.subheader("Performance bis Stichtag")
     for col in selected_cols:
-        perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
+        perf_ytd, perf_week, perf_day = compute_performance(col, stichtag, df_all, handelstage)
         nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
 
         def metric_block(label, value):
