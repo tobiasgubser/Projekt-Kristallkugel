@@ -28,7 +28,7 @@ def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_
     mask = handelstage <= event_date
     if not mask.any():
         st.warning("Für dieses Event-Datum existiert kein vorheriger Handelstag im df_all.")
-        #st.stop()
+        st.stop()
     event_ts = df_all.index[mask].max()
 
     # Event-Studie berechnen
