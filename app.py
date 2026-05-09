@@ -183,9 +183,6 @@ selected_var = st.sidebar.selectbox(
     options=selected_cols,
 )
 
-show_corr = st.sidebar.checkbox("Show correlation matrix")
-show_raw = st.sidebar.checkbox("Show raw data")
-
 # ---------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------
@@ -261,19 +258,15 @@ with tab_dashboard:
 # ---------------------------------------------------------
 with tab_corr:
     st.header("🔗 Korrelationen")
-
-    if show_corr:
-        corr = df_all[selected_cols].corr()
-        fig_corr = px.imshow(
-            corr,
-            text_auto=True,
-            aspect="auto",
-            color_continuous_scale="RdBu_r",
-        )
-        fig_corr.update_layout(height=600)
-        st.plotly_chart(fig_corr, use_container_width=True)
-    else:
-        st.info("Aktiviere 'Show correlation matrix' in der Sidebar.")
+    corr = df_all[selected_cols].corr()
+    fig_corr = px.imshow(
+        corr,
+        text_auto=True,
+        aspect="auto",
+        color_continuous_scale="RdBu_r",
+    )
+    fig_corr.update_layout(height=600)
+    st.plotly_chart(fig_corr, use_container_width=True)
 
 # ---------------------------------------------------------
 # TAB – News
@@ -373,7 +366,4 @@ with tab_forecast:
 # ---------------------------------------------------------
 with tab_raw:
     st.header("📄 Raw Data")
-    if show_raw:
-        st.dataframe(df_all, use_container_width=True)
-    else:
-        st.info("Aktiviere 'Show raw data' in der Sidebar.")
+    st.dataframe(df_all.loc[df_all.index.date == stichtag].iloc[0], use_container_width=True)
