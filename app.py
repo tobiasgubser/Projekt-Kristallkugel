@@ -149,6 +149,44 @@ def forecast_series(series, horizon=10, method="EMA", alpha=0.3):
 
     return pd.Series(forecast_values, index=future_index, name=series.name)
 
+def get_event_window(df, event_date, window_before=3, window_after=3):
+    """
+    Gibt einen DataFrame zurück, der das Event-Fenster enthält.
+    """
+    idx = df.index.get_loc(event_date)
+    start = max(0, idx - window_before)
+    end = min(len(df) - 1, idx + window_after)
+    return df.iloc[start:end+1]
+
+def compute_event_study(df, col, event_date, window_before=3, window_after=3):
+    """
+    Berechnet Returns, Expected Returns (Peer Average), AR und CAR.
+    """
+    window_df = get_event_window(df, event_date, window_before, window_after)
+
+    # Returns
+    returns = window_df[col].pct_change().fillna(0)
+
+    # Expected returns = Peer Average
+    peers = df.drop(columns=[col])
+    peer_avg = peers.mean(axis=1).pct_change().reindex(window_df.index).fillna(0)
+
+    # Abnormal Returns
+    ar = returns - peer_avg
+
+    # CAR
+    car = ar.cumsum()
+
+    result = pd.DataFrame({
+        "value": window_df[col],
+        "return": returns,
+        "expected_return": peer_avg,
+        "abnormal_return": ar,
+        "CAR": car
+    })
+
+    return result
+
 # ---------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------
@@ -186,8 +224,8 @@ selected_var = st.sidebar.selectbox(
 # ---------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------
-tab_dashboard, tab_corr, tab_news, tab_forecast, tab_raw = st.tabs(
-    ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "🔮 Forecast", "📄 Raw Data"]
+tab_dashboard, tab_corr, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
+    ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
 )
 
 # ---------------------------------------------------------
@@ -381,6 +419,60 @@ with tab_forecast:
     # Tabelle
     st.subheader("Forecast-Werte")
     st.dataframe(forecast.to_frame(name=f"{forecast_var} Forecast"), use_container_width=True)
+
+# ---------------------------------------------------------
+# TAB – Event-Studien
+# ---------------------------------------------------------
+with tab_event:
+    st.header("📉 Event-Studien")
+
+    # Event-Typ auswählen
+    event_type = st.selectbox(
+        "Event-Typ",
+        options=df_news["category"].unique().tolist()
+    )
+
+    # Event-Datum auswählen
+    event_dates = df_news[df_news["category"] == event_type].index.date
+    event_date = st.selectbox("Event-Datum", sorted(event_dates))
+
+    # Event-Fenster
+    c1, c2 = st.columns(2)
+    window_before = c1.number_input("Tage vor Event", min_value=1, max_value=10, value=3)
+    window_after = c2.number_input("Tage nach Event", min_value=1, max_value=10, value=3)
+
+    # Variable auswählen
+    col = st.selectbox("Variable für Event-Studie", selected_cols)
+
+    # Event-Date als Timestamp holen
+    event_ts = df_all[df_all.index.date == event_date].index[0]
+
+    # Event-Studie berechnen
+    result = compute_event_study(df_all[selected_cols], col, event_ts, window_before, window_after)
+
+    # Plot AR
+    st.subheader("Abnormal Returns (AR)")
+    fig_ar = px.bar(
+        result,
+        x=result.index,
+        y="abnormal_return",
+        labels={"abnormal_return": "AR", "index": "Datum"},
+    )
+    st.plotly_chart(fig_ar, use_container_width=True)
+
+    # Plot CAR
+    st.subheader("Cumulative Abnormal Returns (CAR)")
+    fig_car = px.line(
+        result,
+        x=result.index,
+        y="CAR",
+        labels={"CAR": "Cumulative AR", "index": "Datum"},
+    )
+    st.plotly_chart(fig_car, use_container_width=True)
+
+    # Tabelle
+    st.subheader("Event-Fenster Daten")
+    st.dataframe(result, use_container_width=True)
 
 # ---------------------------------------------------------
 # TAB – Raw Data
