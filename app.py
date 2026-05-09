@@ -1,8 +1,9 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
+import streamlit              as st
+import pandas                 as pd
+import numpy                  as np
+import plotly.express         as px
+import plotly.graph_objects   as go
+import utility                as ut
 
 st.set_page_config(
     page_title="Kristallkugel",
@@ -15,7 +16,7 @@ st.set_page_config(
 # ---------------------------------------------------------
 @st.cache_resource
 def load_df_all():
-    df = pd.read_csv("df_all.csv", parse_dates=["date"])
+    df = pd.read_csv("data/df_all.csv", parse_dates=["date"])
     df['date'] = pd.to_datetime(df['date'], utc=True)
     df['date'] = df['date'].dt.tz_convert('Europe/Zurich')
     df = df.set_index("date")
@@ -25,7 +26,7 @@ df_all = load_df_all()
 
 @st.cache_resource
 def load_df_news():
-    df = pd.read_csv("df_news.tsv", sep="\t", parse_dates=["date"])
+    df = pd.read_csv("data/df_news.tsv", sep="\t", parse_dates=["date"])
     df["date"] = pd.to_datetime(df["date"], utc=True)
     df["date"] = df["date"].dt.tz_convert("Europe/Zurich")
     df = df.set_index("date")
@@ -36,8 +37,8 @@ df_news = load_df_news()
 # ---------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------
-def get_numeric_cols(df):
-    return df.select_dtypes(include=[np.number]).columns.tolist()
+#def get_numeric_cols(df):
+    #return df.select_dtypes(include=[np.number]).columns.tolist()
 
 def normalize(df):
     return df.div(df.iloc[0])
@@ -120,6 +121,10 @@ def weather_icon(temp, rain_min, radiation, wind):
         return "💨"
     return "🌥️"
 
+# ---------------------------------------------------------
+# Forecast
+# ---------------------------------------------------------
+
 def forecast_series(series, horizon=10, method="EMA", alpha=0.3):
     """
     Einfaches Forecasting:
@@ -186,7 +191,7 @@ def compute_event_study(df, col, event_date, window_before=3, window_after=3):
     })
 
     return result
-
+    
 # ---------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------
@@ -198,7 +203,6 @@ stichtag = st.sidebar.date_input(
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
 )
-
 if stichtag not in handelstage:
     st.warning("Wähle bitte einen SPI Handelstag aus (keine Wochenenden / Feiertage).")
     st.stop()
@@ -208,7 +212,6 @@ selected_cols = st.sidebar.multiselect(
     options=["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"],
     default=["SPI"],
 )
-
 if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
