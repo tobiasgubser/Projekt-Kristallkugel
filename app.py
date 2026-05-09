@@ -58,37 +58,29 @@ def summary_table(norm_df):
     })
     return df.sort_values("Performance (%)", ascending=False).reset_index(drop=True)
 
-# --- Index in date umwandeln für Vergleich ---
 handelstage = df_all.index.date
 
 def compute_performance(col, stichtag):
-    # --- Stichtag als date sicherstellen ---
     if isinstance(stichtag, pd.Timestamp):
         stichtag = stichtag.date()
 
-    # Handelstag bestimmen: letzter Tag <= stichtag
     mask = handelstage <= stichtag
     if not mask.any():
-        return np.nan, np.nan, np.nan  # falls vor erstem Handelstag
+        return np.nan, np.nan, np.nan
 
     stichtag_idx = df_all.index[mask].max()
-
-    # Aktueller Wert
     v_now = df_all.loc[stichtag_idx, col]
 
-    # --- YTD ---
     ytd_start = df_all.index.min()
     v_ytd = df_all.loc[ytd_start, col]
     perf_ytd = (v_now / v_ytd - 1) * 100
 
-    # --- 1 Woche ---
     week_ago_date = stichtag - pd.Timedelta(days=7).to_pytimedelta()
     mask_week = handelstage <= week_ago_date
     week_idx = df_all.index[mask_week].max()
     v_week = df_all.loc[week_idx, col]
     perf_week = (v_now / v_week - 1) * 100
-    
-    # --- 1 Tag ---
+
     mask_prev = handelstage < stichtag
     prev_idx = df_all.index[mask_prev].max()
     v_prev = df_all.loc[prev_idx, col]
@@ -116,22 +108,16 @@ def weather_kpi(value, icon):
     """
 
 def weather_icon(temp, rain_min, radiation, wind):
-    # Regen
     if rain_min > 0:
         return "🌧️"
-    # Schnee (falls du später Temperatur < 0 nutzt)
     if temp < 0:
         return "❄️"
-    # Sonne
     if radiation > 200:
         return "☀️"
-    # Bewölkt
     if radiation > 50:
         return "⛅"
-    # Windig
     if wind > 25:
         return "💨"
-    # Standard
     return "🌥️"
 
 # ---------------------------------------------------------
@@ -172,119 +158,135 @@ show_corr = st.sidebar.checkbox("Show correlation matrix")
 show_raw = st.sidebar.checkbox("Show raw data")
 
 # ---------------------------------------------------------
-# Layout
+# Tabs
 # ---------------------------------------------------------
-st.title("🔮 Kristallkugel")
-
-temp = df_all.loc[df_all.index.date == stichtag, "meteo_Temperatur (°C)"].iloc[0]
-rain = df_all.loc[df_all.index.date == stichtag, "meteo_Niederschlagsdauer (min)"].iloc[0]
-radiation = df_all.loc[df_all.index.date == stichtag, "meteo_Globalstrahlung (W/m²)"].iloc[0]
-wind = df_all.loc[df_all.index.date == stichtag, "meteo_Windgeschwindigkeit (km/h)"].iloc[0]
-icon = weather_icon(temp, rain, radiation, wind)
-st.markdown(weather_kpi(temp, icon), unsafe_allow_html=True)
-
-st.subheader("Performance bis Stichtag")
-for col in selected_cols:
-    perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
-    nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
-
-    def metric_block(label, value):
-        delta = f"{value:.2f}%"
-        delta_color = "normal"
-        if value > 0:
-            delta_color = "normal"   # grün
-        elif value < 0:
-            delta_color = "inverse"  # rot
-        return delta, delta_color
-
-    delta_ytd, color_ytd = metric_block("YTD", perf_ytd)
-    delta_week, color_week = metric_block("1 Woche", perf_week)
-    delta_day, color_day = metric_block("1 Tag", perf_day)
-
-    st.markdown(f"### {col}")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Stand", f"{nominal:,.2f}")
-    c2.metric("YTD", "", delta_ytd, delta_color=color_ytd)
-    c3.metric("1 Woche", "", delta_week, delta_color=color_week)
-    c4.metric("1 Tag", "", delta_day, delta_color=color_day)
-
-st.subheader("Normalized Performance (start = 1)")
-fig_norm = px.line(
-    norm,
-    labels={"value": "Normalized value", "index": "Date"},
+tab_dashboard, tab_corr, tab_news, tab_raw = st.tabs(
+    ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "📄 Raw Data"]
 )
-fig_norm.update_layout(height=500, legend_title_text="")
-st.plotly_chart(fig_norm, use_container_width=True)
 
-st.subheader(f"{selected_var} vs Peer Average")
-peers = norm.drop(columns=[selected_var])
-peer_avg = peers.mean(axis=1)
+# ---------------------------------------------------------
+# TAB 1 – Dashboard
+# ---------------------------------------------------------
+with tab_dashboard:
 
-df_plot = pd.DataFrame({
-    "Date": norm.index,
-    selected_var: norm[selected_var],
-    "Peer average": peer_avg,
-})
+    st.title("🔮 Kristallkugel")
 
-fig_peer = px.line(
-    df_plot,
-    x="Date",
-    y=[selected_var, "Peer average"],
-)
-fig_peer.update_layout(height=400, legend_title_text="")
-st.plotly_chart(fig_peer, use_container_width=True)
+    temp = df_all.loc[df_all.index.date == stichtag, "meteo_Temperatur (°C)"].iloc[0]
+    rain = df_all.loc[df_all.index.date == stichtag, "meteo_Niederschlagsdauer (min)"].iloc[0]
+    radiation = df_all.loc[df_all.index.date == stichtag, "meteo_Globalstrahlung (W/m²)"].iloc[0]
+    wind = df_all.loc[df_all.index.date == stichtag, "meteo_Windgeschwindigkeit (km/h)"].iloc[0]
+    icon = weather_icon(temp, rain, radiation, wind)
+    st.markdown(weather_kpi(temp, icon), unsafe_allow_html=True)
 
-st.subheader(f"Delta: {selected_var} minus Peer Average")
-fig_delta = px.area(
-    deltas,
-    x=deltas.index,
-    y=selected_var,
-)
-fig_delta.update_layout(height=300, legend_title_text="")
-st.plotly_chart(fig_delta, use_container_width=True)
+    st.subheader("Performance bis Stichtag")
+    for col in selected_cols:
+        perf_ytd, perf_week, perf_day = compute_performance(col, stichtag)
+        nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
 
-if show_corr:
-    st.subheader("Correlation Matrix")
-    corr = df_all[selected_cols].corr()
-    fig_corr = px.imshow(
-        corr,
-        text_auto=True,
-        aspect="auto",
-        color_continuous_scale="RdBu_r",
-    )
-    fig_corr.update_layout(height=600)
-    st.plotly_chart(fig_corr, use_container_width=True)
+        def metric_block(label, value):
+            delta = f"{value:.2f}%"
+            delta_color = "normal"
+            if value > 0:
+                delta_color = "normal"
+            elif value < 0:
+                delta_color = "inverse"
+            return delta, delta_color
 
-st.subheader("Newsmeldungen des Tages")
-trump_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Trump Post")].shape[0]
-events_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Newsmeldung")].shape[0]
+        delta_ytd, color_ytd = metric_block("YTD", perf_ytd)
+        delta_week, color_week = metric_block("1 Woche", perf_week)
+        delta_day, color_day = metric_block("1 Tag", perf_day)
 
-c1, c2 = st.columns(2)
-c1.metric("Trump Posts", trump_count)
-c2.metric("Newsmeldungen", events_count)
+        st.markdown(f"### {col}")
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Stand", f"{nominal:,.2f}")
+        c2.metric("YTD", "", delta_ytd, delta_color=color_ytd)
+        c3.metric("1 Woche", "", delta_week, delta_color=color_week)
+        c4.metric("1 Tag", "", delta_day, delta_color=color_day)
 
-df_news_filtered = df_news[df_news.index.date == stichtag]
-for _, row in df_news_filtered.iterrows():
-    st.markdown(
-        f"""
-        <div style="
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-        ">
-            <div style="font-size: 13px; font-weight: 600; color: #555;">
-                {row['category']}
+    st.subheader("Normalized Performance (start = 1)")
+    fig_norm = px.line(norm, labels={"value": "Normalized value", "index": "Date"})
+    fig_norm.update_layout(height=500, legend_title_text="")
+    st.plotly_chart(fig_norm, use_container_width=True)
+
+    st.subheader(f"{selected_var} vs Peer Average")
+    peers = norm.drop(columns=[selected_var])
+    peer_avg = peers.mean(axis=1)
+
+    df_plot = pd.DataFrame({
+        "Date": norm.index,
+        selected_var: norm[selected_var],
+        "Peer average": peer_avg,
+    })
+
+    fig_peer = px.line(df_plot, x="Date", y=[selected_var, "Peer average"])
+    fig_peer.update_layout(height=400, legend_title_text="")
+    st.plotly_chart(fig_peer, use_container_width=True)
+
+    st.subheader(f"Delta: {selected_var} minus Peer Average")
+    fig_delta = px.area(deltas, x=deltas.index, y=selected_var)
+    fig_delta.update_layout(height=300, legend_title_text="")
+    st.plotly_chart(fig_delta, use_container_width=True)
+
+# ---------------------------------------------------------
+# TAB 2 – Korrelationen
+# ---------------------------------------------------------
+with tab_corr:
+    st.header("🔗 Korrelationen")
+
+    if show_corr:
+        corr = df_all[selected_cols].corr()
+        fig_corr = px.imshow(
+            corr,
+            text_auto=True,
+            aspect="auto",
+            color_continuous_scale="RdBu_r",
+        )
+        fig_corr.update_layout(height=600)
+        st.plotly_chart(fig_corr, use_container_width=True)
+    else:
+        st.info("Aktiviere 'Show correlation matrix' in der Sidebar.")
+
+# ---------------------------------------------------------
+# TAB 3 – News
+# ---------------------------------------------------------
+with tab_news:
+    st.header("📰 Newsmeldungen des Tages")
+
+    trump_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Trump Post")].shape[0]
+    events_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Newsmeldung")].shape[0]
+
+    c1, c2 = st.columns(2)
+    c1.metric("Trump Posts", trump_count)
+    c2.metric("Newsmeldungen", events_count)
+
+    df_news_filtered = df_news[df_news.index.date == stichtag]
+    for _, row in df_news_filtered.iterrows():
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #f8f9fa;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 12px 16px;
+                margin-bottom: 12px;
+            ">
+                <div style="font-size: 13px; font-weight: 600; color: #555;">
+                    {row['category']}
+                </div>
+                <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
+                    {row['text']}
+                </div>
             </div>
-            <div style="font-size: 15px; margin-top: 4px; line-height: 1.4;">
-                {row['text']}
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+            """,
+            unsafe_allow_html=True
+        )
 
-if show_raw:
-    st.subheader("Raw Data")
-    st.dataframe(df_all, use_container_width=True)
+# ---------------------------------------------------------
+# TAB 4 – Raw Data
+# ---------------------------------------------------------
+with tab_raw:
+    st.header("📄 Raw Data")
+    if show_raw:
+        st.dataframe(df_all, use_container_width=True)
+    else:
+        st.info("Aktiviere 'Show raw data' in der Sidebar.")
