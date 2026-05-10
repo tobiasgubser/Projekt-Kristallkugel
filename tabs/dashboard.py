@@ -15,10 +15,10 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
 
     st.markdown(f"### Wetter des Tages")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Temperatur", f"{icon} {temp: .2f} °C")
-    c2.metric("Niederschlagsdauer", f"{rain} min")
-    c3.metric("Wind", f"{wind} km/h")
-    c4.metric("Luftfeuchtigkeit", f"{humidity} %")
+    c1.metric("Temperatur", f"{icon} {temp: .1f} °C")
+    c2.metric("Niederschlagsdauer", f"{rain: .1f} min")
+    c3.metric("Wind", f"{wind: .1f} km/h")
+    c4.metric("Luftfeuchtigkeit", f"{humidity: .1f} %")
 
 
     # --- Performance je Variabel ---
