@@ -79,6 +79,7 @@ selected_var = st.sidebar.selectbox(
 # ---------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------
+st.title("🔮 Kristallkugel")
 tab_dashboard, tab_corr, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
     ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
 )
