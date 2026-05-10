@@ -47,5 +47,5 @@ def render_raw_data_tab(df_all, stichtag):
         if not cols:
             continue  # leere Gruppen überspringen
 
-        with st.subheader(f"📁 {group_name}"):
+        with st.subheader(f"📁 {group_name}")
             st.dataframe(df_filtered[cols], use_container_width=True)
