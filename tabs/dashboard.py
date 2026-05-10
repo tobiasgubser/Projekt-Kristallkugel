@@ -4,19 +4,23 @@ import plotly.express as px
 from app_utils import weather_icon, weather_kpi
 
 def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage):
-    """Render the Dashboard tab."""
-    
-    st.title("🔮 Kristallkugel")
 
-    # Weather KPI
+    # --- Wetterdaten ---
     temp = df_all.loc[df_all.index.date == stichtag, "meteo_Temperatur (°C)"].iloc[0]
     rain = df_all.loc[df_all.index.date == stichtag, "meteo_Niederschlagsdauer (min)"].iloc[0]
     radiation = df_all.loc[df_all.index.date == stichtag, "meteo_Globalstrahlung (W/m²)"].iloc[0]
     wind = df_all.loc[df_all.index.date == stichtag, "meteo_Windgeschwindigkeit (km/h)"].iloc[0]
-    
+    humidity = df_all.loc[df_all.index.date == stichtag, "meteo_Relative Luftfeuchtigkeit (%)"].iloc[0]
     icon = weather_icon(temp, rain, radiation, wind)
-    st.markdown(weather_kpi(temp, icon), unsafe_allow_html=True)
 
+    st.markdown(f"### Wetter des Tages")
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Temperatur", {icon} {temp:.2f} °C)
+    c2.metric("Niederschlagsdauer", {rain} min)
+    c3.metric("Wind", {wind} km/h)
+    c4.metric("Luftfeuchtigkeit", {humidity} %)
+
+    # --- Performance je Variabel ---
     st.subheader("Performance bis Stichtag")
     for col in selected_cols:
         perf_ytd, perf_week, perf_day = compute_performance(col, stichtag, df_all, handelstage)
@@ -37,7 +41,7 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
 
         st.markdown(f"### {col}")
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Stand", f"{nominal:,.2f}")
+        c1.metric("Stand", f"{nominal:'.2f}")
         c2.metric("YTD", "", delta_ytd, delta_color=color_ytd)
         c3.metric("1 Woche", "", delta_week, delta_color=color_week)
         c4.metric("1 Tag", "", delta_day, delta_color=color_day)
