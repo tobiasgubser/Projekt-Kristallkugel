@@ -39,13 +39,14 @@ def render_raw_data_tab(df_all, stichtag):
 
     st.subheader("SPI / Sektoren")
     spi_cols = get_spi_columns(df_all, PREFIXES)
-    st.dataframe(df_filtered[spi_cols], use_container_width=True)
+    st.dataframe(df_filtered[spi_cols], use_container_width=True, hide_index=True)
 
-    # --- Alle anderen Prefix-Gruppen ---
+    # --- Alle anderen Gruppen ---
     for group_name, prefix in PREFIXES.items():
         cols = [c for c in df_all.columns if c.startswith(prefix)]
         if not cols:
-            continue  # leere Gruppen überspringen
-
+            continue
+    
         st.subheader(f"📁 {group_name}")
-        st.dataframe(df_filtered[cols], use_container_width=True)
+        df_group = df_filtered[cols].rename(columns=lambda c: c.replace(prefix, ""))
+        st.dataframe(df_group, use_container_width=True, hide_index=True)
