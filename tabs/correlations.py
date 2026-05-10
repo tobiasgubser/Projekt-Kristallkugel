@@ -3,8 +3,6 @@ import pandas as pd
 import plotly.express as px
 
 def render_corr_tab(df_all, selected_cols):
-    """Render the Correlations tab."""
-    st.header("🔗 Korrelationen")
     corr = df_all[selected_cols].corr()
     fig_corr = px.imshow(
         corr,
