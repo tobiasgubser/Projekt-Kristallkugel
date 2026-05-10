@@ -51,17 +51,16 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     fig_norm.update_layout(height=500, legend_title_text="")
     st.plotly_chart(fig_norm, use_container_width=True)
 
-    st.subheader(f"{selected_var} vs Peer Average")
-    peers = norm.drop(columns=[selected_var])
-    peer_avg = peers.mean(axis=1)
+    st.subheader(f"Peer Average")
+    peer_avg = norm.mean(axis=1)
 
     df_plot = pd.DataFrame({
         "Date": norm.index,
-        selected_var: norm[selected_var],
+        selected_cols: norm[selected_cols],
         "Peer average": peer_avg,
     })
 
-    fig_peer = px.line(df_plot, x="Date", y=[selected_var, "Peer average"])
+    fig_peer = px.line(df_plot, x="Date", y=[selected_cols, "Peer average"])
     fig_peer.update_layout(height=400, legend_title_text="")
     st.plotly_chart(fig_peer, use_container_width=True)
 
