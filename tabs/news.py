@@ -2,9 +2,6 @@ import streamlit as st
 import pandas as pd
 
 def render_news_tab(df_news, stichtag):
-    """Render the News tab."""
-    st.header("📰 Newsmeldungen des Tages")
-
     trump_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Trump Post")].shape[0]
     events_count = df_news[(df_news.index.date == stichtag) & (df_news["category"] == "Newsmeldung")].shape[0]
 
