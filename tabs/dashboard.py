@@ -20,7 +20,6 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     c3.metric("Wind", f"{wind: .1f} km/h")
     c4.metric("Luftfeuchtigkeit", f"{humidity: .1f} %")
 
-
     # --- Performance je Variabel ---
     st.subheader("Performance bis Stichtag")
     for col in selected_cols:
