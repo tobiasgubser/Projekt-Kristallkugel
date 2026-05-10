@@ -3,9 +3,6 @@ import pandas as pd
 import plotly.express as px
 
 def render_forecast_tab(df_all, selected_cols, forecast_series):
-    """Render the Forecast tab."""
-    st.header("🔮 Forecasting")
-
     # Horizon & Methode
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -14,7 +11,7 @@ def render_forecast_tab(df_all, selected_cols, forecast_series):
         method = st.selectbox("Methode", ["EMA", "Naiv"])
     with c3:
         alpha = st.slider("Alpha (für EMA)", min_value=0.05, max_value=0.9, value=0.3, step=0.05)
-
+    st.markdown("---")
     # Forecasts für alle ausgewählten Variablen berechnen
     for col in selected_cols:
         series = df_all[col]
@@ -52,3 +49,4 @@ def render_forecast_tab(df_all, selected_cols, forecast_series):
         # Tabelle
         st.subheader("Forecast-Werte")
         st.dataframe(forecast.to_frame(name=f"{col} Forecast"), use_container_width=True)
+        st.markdown("---")
