@@ -49,25 +49,6 @@ def compute_performance(col, stichtag, df_all, handelstage):
 
     return perf_ytd, perf_week, perf_day
 
-def weather_kpi(value, icon):
-    return f"""
-    <div style="
-        border:1px solid #ccc;
-        border-radius:8px;
-        padding:10px 14px;
-        background-color:#f7f7f7;
-        text-align:center;
-        margin-bottom:12px;
-    ">
-        <div style="font-size:12px; color:#666; font-weight:600;">
-            aktuelles Wetter
-        </div>
-        <div style="font-size:20px; font-weight:700; margin-top:4px;">
-            {icon} {value:.2f} °C
-        </div>
-    </div>
-    """
-
 def weather_icon(temp, rain_min, radiation, wind):
     if rain_min > 0:
         return "🌧️"
