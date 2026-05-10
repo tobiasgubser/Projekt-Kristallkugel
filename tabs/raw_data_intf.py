@@ -27,7 +27,6 @@ def render_raw_data_tab(df_all, stichtag):
         return
 
     st.subheader(f"Daten für {stichtag}")
-    st.dataframe(df_filtered, use_container_width=True)
 
     # Download
     csv = df_filtered.to_csv(index=True)
@@ -38,15 +37,9 @@ def render_raw_data_tab(df_all, stichtag):
         mime="text/csv"
     )
 
-    st.subheader("Zusammenfassung")
-    st.write(df_filtered.describe().round(2))
-
-    st.subheader("🔎 Gruppierte Daten nach Prefix")
-
-    # --- SPI (ohne Prefix) ---
+    st.subheader("SPI / Sektoren")
     spi_cols = get_spi_columns(df_all, PREFIXES)
-    with st.expander("📌 SPI / Sektoren (ohne Prefix)"):
-        st.dataframe(df_filtered[spi_cols], use_container_width=True)
+    st.dataframe(df_filtered[spi_cols], use_container_width=True)
 
     # --- Alle anderen Prefix-Gruppen ---
     for group_name, prefix in PREFIXES.items():
@@ -54,5 +47,5 @@ def render_raw_data_tab(df_all, stichtag):
         if not cols:
             continue  # leere Gruppen überspringen
 
-        with st.expander(f"📁 {group_name} ({prefix})"):
+        with st.subheader(f"📁 {group_name}"):
             st.dataframe(df_filtered[cols], use_container_width=True)
