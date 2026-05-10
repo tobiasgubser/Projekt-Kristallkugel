@@ -18,7 +18,7 @@ def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_
     event_ts = df_all.index[mask].max()
 
     for col in selected_cols:
-        st.subheader(f"## 📈 Variable: **{col}**")
+        st.subheader(f"📈 Variable: **{col}**")
         # Event-Studie berechnen
         result = compute_event_study(df_all[selected_cols], col, event_ts, window_before, window_after)
 
