@@ -18,29 +18,27 @@ def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_
     event_ts = df_all.index[mask].max()
 
     for col in selected_cols:
-        st.markdown(f"## 📈 Variable: **{col}**")
+        st.subheader(f"## 📈 Variable: **{col}**")
         # Event-Studie berechnen
         result = compute_event_study(df_all[selected_cols], col, event_ts, window_before, window_after)
 
         # Plot AR
-        st.subheader("Abnormal Returns (AR)")
         fig_ar = px.bar(
             result,
             x=result.index,
             y="abnormal_return",
             labels={"abnormal_return": "AR", "index": "Datum"},
-            title=f"AR – {col}"
+            title=f"Abnormal Returns – {col}"
         )
         st.plotly_chart(fig_ar, use_container_width=True)
 
         # Plot CAR
-        st.subheader("Cumulative Abnormal Returns (CAR)")
         fig_car = px.line(
             result,
             x=result.index,
             y="CAR",
             labels={"CAR": "Cumulative AR", "index": "Datum"},
-            title=f"CAR – {col}"
+            title=f"Cumulative Abnormal Returns – {col}"
         )
         st.plotly_chart(fig_car, use_container_width=True)
 
