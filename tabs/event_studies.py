@@ -3,14 +3,6 @@ import pandas as pd
 import plotly.express as px
 
 def render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag):
-    """Render the Event Studies tab."""
-    st.header("📉 Event-Studien")
-
-    # Event-Typ auswählen
-    event_type = st.selectbox(
-        "Event-Typ",
-        options=df_news["category"].unique().tolist()
-    )
 
     # Event-Fenster
     c1, c2 = st.columns(2)
