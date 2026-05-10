@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from app_utils import weather_icon, weather_kpi
+from app_utils import weather_icon
 
 def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage):
 
