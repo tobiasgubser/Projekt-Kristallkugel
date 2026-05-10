@@ -17,7 +17,7 @@ def render_forecast_tab(df_all, selected_cols, forecast_series):
 
     # Forecasts für alle ausgewählten Variablen berechnen
     for col in selected_cols:
-        series = df_all[selected_cols]
+        series = df_all[col]
 
         # Forecast berechnen
         forecast = forecast_series(series, horizon=horizon, method=method, alpha=alpha)
