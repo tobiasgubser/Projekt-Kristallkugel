@@ -33,17 +33,28 @@ def compute_performance(col, stichtag, df_all, handelstage):
     v_now = df_all.loc[stichtag_idx, col]
 
     ytd_start = df_all.index.min()
-    v_ytd = df_all.loc[ytd_start, col]
+    try:
+        v_ytd = df_all.loc[ytd_start, col]
+    except KeyError:
+        v_ytd = df_all[col].iloc[0]
     perf_ytd = (v_now / v_ytd - 1) * 100
 
     week_ago_date = stichtag - pd.Timedelta(days=7).to_pytimedelta()
     mask_week = handelstage <= week_ago_date
-    week_idx = df_all.index[mask_week].max()
+    valid_days = df_all.index[mask_week]
+    if len(valid_days) == 0:
+        week_idx = df_all.index[0]
+    else:
+        week_idx = valid_days.max()
     v_week = df_all.loc[week_idx, col]
     perf_week = (v_now / v_week - 1) * 100
 
     mask_prev = handelstage < stichtag
-    prev_idx = df_all.index[mask_prev].max()
+    valid_days = df_all.index[mask_prev]
+    if len(valid_days) == 0:
+        prev_idx = df_all.index[0]
+    else:
+        prev_idx = valid_days.max()
     v_prev = df_all.loc[prev_idx, col]
     perf_day = (v_now / v_prev - 1) * 100
 
