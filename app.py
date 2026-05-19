@@ -7,6 +7,7 @@ from app_utils import (
     forecast_series, compute_event_study
 )
 from tabs.dashboard import render_dashboard_tab
+from tabs.finance import render_finance_tab
 from tabs.correlations import render_corr_tab
 from tabs.news import render_news_tab
 from tabs.forecast import render_forecast_tab
@@ -81,7 +82,7 @@ selected_var = st.sidebar.selectbox(
 # ---------------------------------------------------------
 st.title("🔮 Kristallkugel")
 tab_dashboard, tab_corr, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
-    ["📊 Dashboard", "🔗 Korrelationen", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
+    ["📊 Dashboard", "🏦 Finanzdaten", "🔗 Korrelationen", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
 )
 
 # ---------------------------------------------------------
@@ -89,6 +90,9 @@ tab_dashboard, tab_corr, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
 # ---------------------------------------------------------
 with tab_dashboard:
         render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage)
+
+with tab_finance:
+    render_finance_tab(df_all, stichtag, compute_performance, handelstage)
 
 with tab_corr:
         render_corr_tab(df_all, selected_cols)
