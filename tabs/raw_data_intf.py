@@ -11,6 +11,9 @@ def render_raw_data_tab(df_all, stichtag):
         "VIX": "vix_",
         "Events": "events_",
         "Baltic": "baltic_",
+        "Gold": "gold_",
+        "S&P 500": "sp500_",
+        "Rohöl": "oil_",
     }
 
     def get_spi_columns(df, prefixes):
