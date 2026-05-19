@@ -5,7 +5,7 @@ def render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, hand
 
     # --- Performance je Variabel ---
     st.subheader("Performance bis Stichtag")
-  assets = ["Gold", "S&P 500", "Brent", "WTI"]
+    assets = ["gold_Gold", "sp500_S&P 500", "oil_Brent", "oil_WTI"]
     for col in assets:
         perf_ytd, perf_week, perf_day = compute_performance(col, stichtag, df_all, handelstage)
         nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
