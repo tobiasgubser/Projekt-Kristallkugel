@@ -92,7 +92,7 @@ with tab_dashboard:
         render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage)
 
 with tab_finance:
-    render_finance_tab(df_all, stichtag, compute_performance, handelstage)
+    render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, handelstage)
 
 with tab_corr:
         render_corr_tab(df_all, selected_cols)
