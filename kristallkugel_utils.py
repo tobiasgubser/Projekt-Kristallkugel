@@ -107,7 +107,7 @@ def style_table(df):
 #  Funktion für Shift auf nächsten Handelstag
 # ------------------------------------
 
-def shift_to_next_trading_day(df_source):
+def shift_to_next_trading_day(df_source, df_spi):
     # Sicherstellen, dass Index sortiert ist
     df_source = df_source.sort_index()
 
