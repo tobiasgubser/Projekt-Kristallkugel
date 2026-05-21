@@ -127,7 +127,7 @@ def shift_to_next_trading_day(df_source):
 # ------------------------------------
 #  Funktion für Plots
 # ------------------------------------
-def describing_plots(cols):
+def describing_plots(df_all, cols):
 
     # ------------------------------------
     #  Tabelle für ALLE Variablen
