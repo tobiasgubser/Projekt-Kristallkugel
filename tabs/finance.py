@@ -23,7 +23,10 @@ def render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, hand
         delta_week, color_week = metric_block("1 Woche", perf_week)
         delta_day, color_day = metric_block("1 Tag", perf_day)
 
-        st.markdown(f"### {col}")
+        def strip_prefix(name):
+            return name.split("_", 1)[1] if "_" in name else name
+
+        st.markdown(f"### {strip_prefix(col)}")
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Stand", f"{nominal:,.2f}")
         c2.metric("YTD", "", delta_ytd, delta_color=color_ytd)
