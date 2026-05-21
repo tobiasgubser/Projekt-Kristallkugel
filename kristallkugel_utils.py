@@ -254,7 +254,7 @@ def describing_plots(df_all, cols):
   # ------------------------------------
 # Funktion für Heatmap & Scatterplots
 # ------------------------------------
-def heatmaps_scatterplots(cols, title):
+def heatmaps_scatterplots(df_all, cols, title):
     def strip_prefix(colname):
         return colname.split("_", 1)[-1]
 
@@ -354,7 +354,7 @@ def rolling_correlation(series_x, series_y, window=30):
 # ------------------------------------
 # Kompakte & reduzierte Rolling-Korrelationen im Grid
 # ------------------------------------
-def rolling_correlation_multi(cols, title, window=30):
+def rolling_correlation_multi(df_all, cols, title, window=30):
 
     def strip_prefix(colname):
         return colname.split("_", 1)[-1]
@@ -402,7 +402,7 @@ def rolling_correlation_multi(cols, title, window=30):
 # ---------------------------------------------------------
 # Lag-Korrelationsmatrix berechnen (mit SPI-Rendite)
 # ---------------------------------------------------------
-def lag_analysis(cols, title):
+def lag_analysis(df_all, cols, title):
   lags = range(0, 8)
   corr_matrix = pd.DataFrame(index=cols, columns=range(0, 8))
 
