@@ -67,8 +67,8 @@ def overview_table(df):
     # Zielspalten
     desired_cols = [
         "Dtype", "Non-Null", "Missing",
-        "Mittelwert", "Standardabweichung", "Varianz",
-        "Minimum", "Q1 (25%)", "Median", "Q3 (75%)", "Maximum"
+        "Median", "Mittelwert", "Q1 (25%)", "Q3 (75%)",
+        "Standardabweichung", "Varianz", "Minimum", "Maximum"
     ]
 
     # Nur existierende Spalten auswählen → verhindert jeden KeyError
