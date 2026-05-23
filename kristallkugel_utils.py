@@ -15,8 +15,12 @@ import os
 from statsmodels.nonparametric.smoothers_lowess import lowess
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
 from scipy.stats import skew, kurtosis # Rendite & Verteilung
 
 # ---------------------------------------------------------------------
