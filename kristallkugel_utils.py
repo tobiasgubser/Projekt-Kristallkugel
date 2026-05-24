@@ -488,6 +488,9 @@ def clean_post(text):
 # ------------------------------------
 def run_logreg(df_logreg, feature_cols):
 
+    # interne Kopie erstellen, damit df_all unverändert bleibt
+    df_logreg = df_all.copy()
+
     # ------------ Zielvariable erstellen (1 = Anstieg, 0 = Rückgang) ------------ #
     df_logreg["SPI_up"] = np.where(df_logreg["SPI (%)"] > 0, 1, 0)
 
