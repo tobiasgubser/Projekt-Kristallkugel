@@ -5,7 +5,6 @@ import matplotlib.dates       as mdates
 from IPython.display import display
 import re
 import html
-import emoji
 
 # erkennt URL-Segmente (auch kaputt)
 URL_SEGMENT = re.compile(r'https?\s*:\s*/\s*/\s*[\w\.-]+(?:\s*/[\w\./\-%\s]*)?', flags=re.IGNORECASE)
@@ -435,11 +434,6 @@ def clean_post(text):
 
     # Typografische Anführungszeichen normalisieren
     text = text.replace('‘', "'").replace('’', "'").replace('“', '"').replace('”', '"')
-
-    # Emojis in Text umwandeln
-    text = emoji.demojize(text, language='en')
-    # Optional: Doppelpunkte um Emojis durch Leerzeichen ersetzen, damit "word:rocket:word" getrennt wird
-    text = text.replace(':', ' ')
 
     text = fix_broken_urls(text)
 
