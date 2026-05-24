@@ -252,6 +252,7 @@ def describing_plots(df_all, cols):
 
         plt.tight_layout(w_pad=4.0)
         plt.show()
+        print("---")
 
   # ------------------------------------
 # Funktion für Heatmap & Scatterplots
