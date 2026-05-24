@@ -483,9 +483,9 @@ def clean_post(text):
 
     return text
 
-# ---------------------------------------------------------
-# Logistische Regression: Vorhersage der SPI-Richtung (Up/Down)
-# ---------------------------------------------------------
+# ------------------------------------
+# Funktion für Logistische Regression
+# ------------------------------------
 def run_logreg(df_logreg, feature_cols):
 
     # ------------ Zielvariable erstellen (1 = Anstieg, 0 = Rückgang) ------------ #
@@ -529,3 +529,57 @@ def run_logreg(df_logreg, feature_cols):
         "y_pred": y_pred,
         "coeffs": coeffs
     }
+
+# ------------------------------------
+# Funktion für Balkendiagramm (Koeffizienten)
+# ------------------------------------
+def plot_logreg_coeffs(results_logreg):
+
+    coeffs = results_logreg["coeffs"]
+
+    # Plot-Grösse definieren
+    plt.figure(figsize=(8, 10))
+
+    # Balkendiagramm erstellen
+    sns.barplot(
+        data=coeffs,
+        x="Koeffizient",
+        y="Feature",
+        palette="coolwarm"
+    )
+
+    # Titel und Achsenbeschriftungen setzen
+    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
+    plt.xlabel("Koeffizient (logistische Regression)")
+    plt.ylabel("")  # Leere Beschriftung für sauberes Layout
+
+    # Layout optimieren
+    plt.tight_layout()
+    plt.show()
+
+# ------------------------------------
+# Funktion für Balkendiagramm (Koeffizienten)
+# ------------------------------------
+def plot_logreg_coeffs(results_logreg):
+
+    coeffs = results_logreg["coeffs"]
+
+    # Plot-Grösse definieren
+    plt.figure(figsize=(8, 10))
+
+    # Balkendiagramm erstellen
+    sns.barplot(
+        data=coeffs,
+        x="Koeffizient",
+        y="Feature",
+        palette="coolwarm"
+    )
+
+    # Titel und Achsenbeschriftungen setzen
+    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
+    plt.xlabel("Koeffizient (logistische Regression)")
+    plt.ylabel("")  # Leere Beschriftung für sauberes Layout
+
+    # Layout optimieren
+    plt.tight_layout()
+    plt.show()
