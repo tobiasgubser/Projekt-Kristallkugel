@@ -1,27 +1,17 @@
 import pandas                 as pd
-import numpy                  as np
 import matplotlib.pyplot      as plt
 import seaborn                as sns
-import plotly.express         as px
-import matplotlib.ticker      as mtick
 import matplotlib.dates       as mdates
-import ipywidgets             as widgets
-from IPython.display import display, HTML, Javascript
-import io
-import requests
+from IPython.display import display
 import re
-from datetime import date
-import os
-from statsmodels.nonparametric.smoothers_lowess import lowess
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.preprocessing import StandardScaler
-from scipy.stats import skew, kurtosis # Rendite & Verteilung
+import html
+import emoji
+
+# erkennt URL-Segmente (auch kaputt)
+URL_SEGMENT = re.compile(r'https?\s*:\s*/\s*/\s*[\w\.-]+(?:\s*/[\w\./\-%\s]*)?', flags=re.IGNORECASE)
+
+# erkennt domain.tld/... ohne https
+DOMAIN_SEGMENT = re.compile(r'\b[\w-]+\s*\.\s*[a-z]{2,}\s*/[\w\./\-%\s]*', flags=re.IGNORECASE)
 
 # ---------------------------------------------------------------------
 # Funktionen für "Projekt Kristallkugel.ipynb"
@@ -435,3 +425,49 @@ def lag_analysis(df_all, cols, title):
   plt.ylabel(f'{title}')
   plt.tight_layout()
   plt.show()
+
+def clean_post(text):
+    if not isinstance(text, str):
+        return None
+
+    # HTML-Sonderzeichen in echten Text umwandeln (&amp; -> &)
+    text = html.unescape(text)
+
+    # Typografische Anführungszeichen normalisieren
+    text = text.replace('‘', "'").replace('’', "'").replace('“', '"').replace('”', '"')
+
+    # Emojis in Text umwandeln
+    text = emoji.demojize(text, language='en')
+    # Optional: Doppelpunkte um Emojis durch Leerzeichen ersetzen, damit "word:rocket:word" getrennt wird
+    text = text.replace(':', ' ')
+
+    text = fix_broken_urls(text)
+
+    # Schritt 2: Medien-Platzhalter entfernen
+    text = re.sub(r'\[Images?\]|\[Videos?\]|\[Links?\]|\[GIF\]|\[QuickTime Video\]', '', text, flags=re.IGNORECASE)
+
+    # Schritt 3: URLs entfernen
+    text = re.sub(r'https?://\S+', '', text)
+    text = re.sub(r'\b[\w-]+\.[a-z]{2,}/\S*', '', text)
+    text = re.sub(r'\?\S+', '', text)
+
+    text = text.strip()
+
+    # Retweets entfernen
+    text = re.sub(r'^RT\s+@\w+[:\s]*', '', text).strip()
+
+    # Finales Cleaning
+    text = re.sub(r'@\w+', '@user', text)
+    text = re.sub(r'#(\w+)', r'\1', text)
+    text = re.sub(r'\b\w+=\S{6,}\b', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+
+    # NEU: 4. Mindestinhalt anhand von echten Wörtern prüfen (mindestens 3 Wörter)
+    words = text.split()
+    if len(words) < 3:
+        return None
+
+    # Tokenlimit (deine bestehende Logik)
+    text = ' '.join(words[:500])
+
+    return text
