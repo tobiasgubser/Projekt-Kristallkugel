@@ -482,6 +482,7 @@ def clean_post(text):
     text = ' '.join(words[:500])
 
     return text
+
 # ------------------------------------
 # Funktion für Logistische Regression
 # ------------------------------------
@@ -532,32 +533,6 @@ def run_logreg(df_all, feature_cols):
         "coeffs": coeffs
     }
 
-# ------------------------------------
-# Funktion für Balkendiagramm (Koeffizienten)
-# ------------------------------------
-def plot_logreg_coeffs(results_logreg):
-
-    coeffs = results_logreg["coeffs"]
-
-    # Plot-Grösse definieren
-    plt.figure(figsize=(8, 10))
-
-    # Balkendiagramm erstellen
-    sns.barplot(
-        data=coeffs,
-        x="Koeffizient",
-        y="Feature",
-        palette="coolwarm"
-    )
-
-    # Titel und Achsenbeschriftungen setzen
-    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
-    plt.xlabel("Koeffizient (logistische Regression)")
-    plt.ylabel("")  # Leere Beschriftung für sauberes Layout
-
-    # Layout optimieren
-    plt.tight_layout()
-    plt.show()
 
 # ------------------------------------
 # Funktion für Balkendiagramm (Koeffizienten)
@@ -566,22 +541,32 @@ def plot_logreg_coeffs(results_logreg):
 
     coeffs = results_logreg["coeffs"]
 
-    # Plot-Grösse definieren
     plt.figure(figsize=(8, 10))
-
-    # Balkendiagramm erstellen
     sns.barplot(
         data=coeffs,
         x="Koeffizient",
         y="Feature",
         palette="coolwarm"
     )
-
-    # Titel und Achsenbeschriftungen setzen
     plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
     plt.xlabel("Koeffizient (logistische Regression)")
-    plt.ylabel("")  # Leere Beschriftung für sauberes Layout
-
-    # Layout optimieren
+    plt.ylabel("")
     plt.tight_layout()
     plt.show()
+
+
+# ------------------------------------
+# Funktion für Confusion Matrix (Heatmap)
+# ------------------------------------
+def plot_logreg_confusion(results_logreg):
+
+    cm = confusion_matrix(results_logreg["y_test"], results_logreg["y_pred"])
+
+    plt.figure(figsize=(4, 3))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+    plt.title("Confusion Matrix – Logistische Regression")
+    plt.xlabel("Vorhergesagt")
+    plt.ylabel("Tatsächlich")
+    plt.tight_layout()
+    plt.show()
+
