@@ -482,11 +482,10 @@ def clean_post(text):
     text = ' '.join(words[:500])
 
     return text
-
 # ------------------------------------
 # Funktion für Logistische Regression
 # ------------------------------------
-def run_logreg(df_logreg, feature_cols):
+def run_logreg(df_all, feature_cols):
 
     # interne Kopie erstellen, damit df_all unverändert bleibt
     df_logreg = df_all.copy()
