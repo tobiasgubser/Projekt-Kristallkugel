@@ -1,8 +1,17 @@
-import pandas                 as pd
-import matplotlib.pyplot      as plt
-import seaborn                as sns
-import matplotlib.dates       as mdates
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.dates as mdates
 from IPython.display import display
+
+# Machine Learning
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+
+# Sonstiges
 import re
 import html
 
