@@ -482,3 +482,50 @@ def clean_post(text):
     text = ' '.join(words[:500])
 
     return text
+
+# ---------------------------------------------------------
+# Logistische Regression: Vorhersage der SPI-Richtung (Up/Down)
+# ---------------------------------------------------------
+def run_logreg(df_logreg, feature_cols):
+
+    # ------------ Zielvariable erstellen (1 = Anstieg, 0 = Rückgang) ------------ #
+    df_logreg["SPI_up"] = np.where(df_logreg["SPI (%)"] > 0, 1, 0)
+
+    # ------------ Features definieren (alle externen Faktoren) ------------ #
+    X = df_logreg[feature_cols].copy()
+    y = df_logreg["SPI_up"]
+
+    # Fehlende Werte ersetzen (notwendig für sklearn)
+    X = X.fillna(0)
+
+    # ------------ Standardisierung der Features ------------ #
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # ------------ Trainings- und Testdaten splitten ------------ #
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_scaled, y, test_size=0.25, shuffle=False
+    )
+
+    # ------------ Modell erstellen und trainieren ------------ #
+    model = LogisticRegression(max_iter=2000)
+    model.fit(X_train, y_train)
+
+    # ------------ Vorhersage und Auswertung ------------ #
+    y_pred = model.predict(X_test)
+
+    # ------------ Einflussstärken (Koeffizienten) speichern ------------ #
+    coeffs = pd.DataFrame({
+        "Feature": X.columns,
+        "Koeffizient": model.coef_[0]
+    }).sort_values(by="Koeffizient", ascending=False)
+
+    # Rückgabe aller relevanten Ergebnisse
+    return {
+        "model": model,
+        "scaler": scaler,
+        "X_test": X_test,
+        "y_test": y_test,
+        "y_pred": y_pred,
+        "coeffs": coeffs
+    }
