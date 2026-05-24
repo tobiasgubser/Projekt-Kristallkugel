@@ -250,8 +250,9 @@ def describing_plots(df_all, cols):
                 )
             )
 
-        plt.tight_layout(w_pad=4.0, h_pad=2.0)
+        plt.tight_layout(w_pad=4.0)
         plt.show()
+        display(HTML("<hr style='border:1px solid black; margin:30px 0;'>"))
 
   # ------------------------------------
 # Funktion für Heatmap & Scatterplots
