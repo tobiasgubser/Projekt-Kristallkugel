@@ -13,6 +13,7 @@ from sklearn.metrics import confusion_matrix
 
 # Sonstiges
 import re
+import HTML
 from IPython.display import display, HTML
 
 # erkennt URL-Segmente (auch kaputt)
