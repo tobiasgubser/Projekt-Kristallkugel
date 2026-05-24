@@ -13,7 +13,7 @@ from sklearn.metrics import confusion_matrix
 
 # Sonstiges
 import re
-import html
+from IPython.display import display, HTML
 
 # erkennt URL-Segmente (auch kaputt)
 URL_SEGMENT = re.compile(r'https?\s*:\s*/\s*/\s*[\w\.-]+(?:\s*/[\w\./\-%\s]*)?', flags=re.IGNORECASE)
