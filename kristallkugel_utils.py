@@ -425,6 +425,23 @@ def lag_analysis(df_all, cols, title):
   plt.tight_layout()
   plt.show()
 
+def fix_broken_urls(text):
+    """Entfernt Leerzeichen innerhalb von URL-ähnlichen Mustern."""
+
+    # 1) https://... reparieren
+    def fix_url(match):
+        return re.sub(r'\s+', '', match.group(0))
+
+    text = URL_SEGMENT.sub(fix_url, text)
+
+    # 2) domain.tld/... reparieren
+    def fix_domain(match):
+        return re.sub(r'\s+', '', match.group(0))
+
+    text = DOMAIN_SEGMENT.sub(fix_domain, text)
+
+    return text
+
 def clean_post(text):
     if not isinstance(text, str):
         return None
