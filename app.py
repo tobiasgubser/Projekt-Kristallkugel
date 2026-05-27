@@ -33,6 +33,14 @@ def load_df_all():
 
 df_all = load_df_all()
 
+def get_random_forest():
+    model    = joblib.load('data/kristallkugel_model.pkl')
+    features = joblib.load('data/kristallkugel_features.pkl')
+
+    return model, features
+
+model, features = get_random_forest()
+
 @st.cache_resource
 def load_df_news():
     df = pd.read_csv("data/df_news.tsv", sep="\t", parse_dates=["date"])
@@ -106,7 +114,7 @@ with tab_event:
         render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag)
 
 with tab_forecast:
-        render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct)
+        render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model, features)
 
 with tab_raw:
         render_raw_data_tab(df_all, stichtag)
