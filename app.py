@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import joblib
 import plotly.express as px
 from app_utils import (
     normalize, compute_peer_deltas, compute_performance, 
