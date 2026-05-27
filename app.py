@@ -92,7 +92,7 @@ sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins = get_latest_
 st.title("🔮 Kristallkugel")
 
 heute = datetime.date.today().strftime("%d.%m.%Y")
-st.subheader(f"Aktuelle Daten von ({heute})")
+st.subheader(f'Aktuelle Daten ({heute})')
 
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 col1.metric('S&P 500 (%)',     f'{sp500_pct:.2f}%')
@@ -118,7 +118,7 @@ prediction  = model.predict(input_data)[0]
 probability = model.predict_proba(input_data)[0]
 
 # --------- Ergebnis anzeigen --------- #
-st.subheader('Prognose für morgen')
+st.subheader(f'Prognose für morgen {heute[1]}')
 
 if prediction == 1:
     st.success(f'📈 SPI steigt  —  Wahrscheinlichkeit: {probability[1]:.1%}')
