@@ -127,7 +127,7 @@ tab_dashboard, tab_finance, tab_news, tab_raw = st.tabs(["📊 SPI", "🏦 Finan
 # Render Tabs
 # ---------------------------------------------------------
 with tab_dashboard:
-        render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage)
+        render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_performance, handelstage)
 
 with tab_finance:
     render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, handelstage)
