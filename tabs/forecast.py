@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-def render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model,features):
+def render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins, model, features):
     st.title('🔮 Kristallkugel – SPI Prognose')
     st.subheader('Vorhersage für den nächsten Handelstag')
     
@@ -14,10 +14,12 @@ def render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model
     # --------- Prediction --------- #
     input_data = pd.DataFrame([{
         'sp500_S&P 500 (%)':      sp500_pct,
-        'vix_VIX':                vix_close,
+        'vix_VIX (%)':            vix_close,
         'oil_Brent (%)':          brent_pct,
         'oil_WTI (%)':            wti_pct,
         'gold_Gold (%)':          gold_pct,
+        'meteo_Temperatur (°C)':  temp,
+        'snb_SNB Leitzins'        leitzins
     }])
     
     prediction  = model.predict(input_data)[0]
