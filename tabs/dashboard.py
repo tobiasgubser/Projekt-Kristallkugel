@@ -52,7 +52,7 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     st.plotly_chart(fig_norm, use_container_width=True)
 
     st.subheader(f"{selected_var} vs Peer Average")
-    peers = norm.drop(columns=[selected_var])
+    peers = norm
     peer_avg = peers.mean(axis=1)
 
     df_plot = pd.DataFrame({
