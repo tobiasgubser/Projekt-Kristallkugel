@@ -176,8 +176,8 @@ def get_latest_data():
             )
 
         # Leitzins
-        leitzins = raw = requests.get('https://data.snb.ch/api/cube/snboffzisa/data/json/de?dimSel=D0(LZ)&fromDate=2026-04&toDate=2026-04').json()['timeseries'][0]['values'][0]['value']
-
+        leitzins = max(requests.get('https://data.snb.ch/api/cube/snboffzisa/data/json/de?dimSel=D0(LZ)&fromDate=2026-01&toDate=2026-12').json()['timeseries'][0]['values'], key=lambda x: x['date'])['value']
+        
         return sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins
 
     except Exception as e:
