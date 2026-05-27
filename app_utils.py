@@ -164,7 +164,13 @@ def get_latest_data():
         wti = yf.download('CL=F', period='5d', auto_adjust=True, progress=False)
         wti_pct = wti['Close'].pct_change().dropna().iloc[-1].item() * 100
 
-        return sp500_pct, vix_close, gold_pct, brent_pct, wti_pct
+        # Temperatur
+        temp = 0
+
+        # Leitzins
+        leitzins = 0
+
+        return sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins
 
     except Exception as e:
         st.warning(f'⚠️ Marktdaten konnten nicht geladen werden: {e}')
