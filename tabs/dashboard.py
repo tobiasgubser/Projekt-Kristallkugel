@@ -49,7 +49,7 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     st.subheader("Normalized Performance (start = 1)")
     peer_avg = norm.mean(axis=1)
     df_plot = norm[selected_cols].copy()
-    df_plot["Peer average"] = df_plot.mean(axis=1)
+    df_plot["Peer average"] = peer_avg
     df_plot["Date"] = df_plot.index
     
     df_long = df_plot.melt(id_vars="Date", var_name="Variable", value_name="Value")
