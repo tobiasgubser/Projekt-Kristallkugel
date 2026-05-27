@@ -73,7 +73,7 @@ if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize(["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"])
+norm = normalize(df_all["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"])
 deltas = compute_peer_deltas(norm)
 
 selected_var = st.sidebar.selectbox(
