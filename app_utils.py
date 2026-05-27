@@ -1,6 +1,8 @@
 """Utility functions for Kristallkugel app."""
 import pandas as pd
 import numpy as np
+import yfinance as yf
+import joblib
 
 def normalize(df):
     return df.div(df.iloc[0])
@@ -139,3 +141,27 @@ def compute_event_study(df, col, event_date, window_before=3, window_after=3):
     })
 
     return result
+
+
+def get_latest_data():
+    # S&P 500
+    sp500 = yf.download('^GSPC', period='2d', auto_adjust=True, progress=False)
+    sp500_pct = sp500['Close'].pct_change().iloc[-1].item() * 100
+
+    # VIX
+    vix = yf.download('^VIX', period='2d', auto_adjust=True, progress=False)
+    vix_close = vix['Close'].iloc[-1].item()
+
+    # Gold
+    gold = yf.download('GC=F', period='2d', auto_adjust=True, progress=False)
+    gold_pct = gold['Close'].pct_change().iloc[-1].item() * 100
+
+    # Brent
+    brent = yf.download('BZ=F', period='2d', auto_adjust=True, progress=False)
+    brent_pct = brent['Close'].pct_change().iloc[-1].item() * 100
+
+    # WTI
+    wti = yf.download('CL=F', period='2d', auto_adjust=True, progress=False)
+    wti_pct = wti['Close'].pct_change().iloc[-1].item() * 100
+
+    return sp500_pct, vix_close, gold_pct, brent_pct, wti_pct
