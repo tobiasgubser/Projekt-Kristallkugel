@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import plotly.express as px
+import datetime
 from app_utils import (
     normalize, compute_peer_deltas, compute_performance, 
     forecast_series, compute_event_study,get_latest_data
@@ -88,9 +89,45 @@ selected_var = st.sidebar.selectbox(
 sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins = get_latest_data()
 
 # ---------------------------------------------------------
-# Tabs
+# Dashboard
 # ---------------------------------------------------------
 st.title("🔮 Kristallkugel")
+
+heute = datetime.date.today().strftime("%d.%m.%Y")
+st.subheader(f"Aktuelle Daten von ({heute})")
+
+col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+col1.metric('S&P 500 (%)',     f'{sp500_pct:.2f}%')
+col2.metric('VIX',             f'{vix_close:.2f}')
+col3.metric('Gold (%)',        f'{gold_pct:.2f}%')
+col4.metric('Brent (%)',       f'{brent_pct:.2f}%')
+col5.metric('WTI (%)',         f'{wti_pct:.2f}%')
+col6.metric('SNB Leitzins',    f'{leitzins:.2f}%')
+col7.metric('Temperatur (°C)', f'{temp:.0f}°C')
+
+# --------- Prediction --------- #
+input_data = pd.DataFrame([{
+    'sp500_S&P 500 (%)':      sp500_pct,
+    'vix_VIX (%)':            vix_close,
+    'oil_Brent (%)':          brent_pct,
+    'oil_WTI (%)':            wti_pct,
+    'gold_Gold (%)':          gold_pct,
+    'meteo_Temperatur (°C)':  temp,
+    'snb_SNB Leitzins':       leitzins
+}])
+
+prediction  = model.predict(input_data)[0]
+probability = model.predict_proba(input_data)[0]
+
+# --------- Ergebnis anzeigen --------- #
+st.subheader('🔮 Prognose für morgen')
+
+if prediction == 1:
+    st.success(f'📈 SPI steigt  —  Wahrscheinlichkeit: {probability[1]:.1%}')
+else:
+    st.error(f'📉 SPI fällt  —  Wahrscheinlichkeit: {probability[0]:.1%}')
+st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
+
 tab_dashboard, tab_finance, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
     ["📊 Dashboard", "🏦 Finanzdaten", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
 )
