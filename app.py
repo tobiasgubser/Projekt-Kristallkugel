@@ -118,7 +118,8 @@ prediction  = model.predict(input_data)[0]
 probability = model.predict_proba(input_data)[0]
 
 # --------- Ergebnis anzeigen --------- #
-st.subheader(f'Prognose für morgen {heute + datetime.timedelta(days=1)}')
+morgen = heute + datetime.timedelta(days=1)
+st.subheader(f'Prognose für morgen {morgen}')
 
 if prediction == 1:
     st.success(f'📈 SPI steigt  —  Wahrscheinlichkeit: {probability[1]:.1%}')
