@@ -11,8 +11,6 @@ from app_utils import (
 from tabs.dashboard import render_dashboard_tab
 from tabs.finance import render_finance_tab
 from tabs.news import render_news_tab
-from tabs.forecast import render_forecast_tab
-from tabs.event_studies import render_event_tab
 from tabs.raw_data_intf import render_raw_data_tab
 
 st.set_page_config(
@@ -128,10 +126,10 @@ else:
     st.error(f'📉 SPI fällt  —  Wahrscheinlichkeit: {probability[0]:.1%}')
 st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
 
+st.markdown("---")
+
 st.subheader('Historische Daten')
-tab_dashboard, tab_finance, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
-    ["📊 SPI", "🏦 Finanzdaten", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
-)
+tab_dashboard, tab_finance, tab_news, tab_raw = st.tabs(["📊 SPI", "🏦 Finanzdaten", "📰 News", "📄 Raw Data"])
 
 # ---------------------------------------------------------
 # Render Tabs
@@ -144,12 +142,6 @@ with tab_finance:
 
 with tab_news:
         render_news_tab(df_news, stichtag)
-
-with tab_event:
-        render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag)
-
-with tab_forecast:
-        render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins, model, features)
 
 with tab_raw:
         render_raw_data_tab(df_all, stichtag)
