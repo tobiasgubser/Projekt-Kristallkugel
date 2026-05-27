@@ -9,7 +9,6 @@ from app_utils import (
 )
 from tabs.dashboard import render_dashboard_tab
 from tabs.finance import render_finance_tab
-from tabs.correlations import render_corr_tab
 from tabs.news import render_news_tab
 from tabs.forecast import render_forecast_tab
 from tabs.event_studies import render_event_tab
@@ -92,8 +91,8 @@ sp500_pct, vix_close, gold_pct, brent_pct, wti_pct = get_latest_data()
 # Tabs
 # ---------------------------------------------------------
 st.title("🔮 Kristallkugel")
-tab_dashboard, tab_finance, tab_corr, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
-    ["📊 Dashboard", "🏦 Finanzdaten", "🔗 Korrelationen", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
+tab_dashboard, tab_finance, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
+    ["📊 Dashboard", "🏦 Finanzdaten", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
 )
 
 # ---------------------------------------------------------
@@ -104,9 +103,6 @@ with tab_dashboard:
 
 with tab_finance:
     render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, handelstage)
-
-with tab_corr:
-        render_corr_tab(df_all, selected_cols)
 
 with tab_news:
         render_news_tab(df_news, stichtag)
