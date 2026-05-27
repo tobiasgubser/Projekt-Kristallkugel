@@ -20,7 +20,6 @@ def render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct,mode
         'oil_Brent (%)':          brent_pct,
         'oil_WTI (%)':            wti_pct,
         'gold_Gold (%)':          gold_pct,
-        'trump_Sentiment Median': trump_sentiment
     }])
     
     prediction  = model.predict(input_data)[0]
@@ -33,5 +32,4 @@ def render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct,mode
         st.success(f'📈 SPI steigt  —  Wahrscheinlichkeit: {probability[1]:.1%}')
     else:
         st.error(f'📉 SPI fällt  —  Wahrscheinlichkeit: {probability[0]:.1%}')
-    
     st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
