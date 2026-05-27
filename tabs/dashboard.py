@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from app_utils import weather_icon
 
-def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected_var, compute_performance, handelstage):
+def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_performance, handelstage):
 
     # --- Wetterdaten ---
     temp = df_all.loc[df_all.index.date == stichtag, "meteo_Temperatur (°C)"].iloc[0]
