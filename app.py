@@ -129,7 +129,8 @@ st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
 
 st.markdown("---")
 
-st.subheader('Historische Daten ({stichtag.strftime("%d.%m.%Y")})')
+hist_date = stichtag.strftime("%d.%m.%Y")
+st.subheader('Historische Daten ({hist_date})')
 tab_dashboard, tab_finance, tab_news, tab_raw = st.tabs(["📊 SPI", "🏦 Finanzdaten", "📰 News", "📄 Raw Data"])
 
 # ---------------------------------------------------------
