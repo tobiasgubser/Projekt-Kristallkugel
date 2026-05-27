@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import app.utils
-def render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct):
+def render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model,features):
     st.title('🔮 Kristallkugel – SPI Prognose')
     st.subheader('Vorhersage für den nächsten Handelstag')
     
