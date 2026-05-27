@@ -77,11 +77,6 @@ if not selected_cols:
 norm = normalize(df_all[assets])
 deltas = compute_peer_deltas(norm)
 
-selected_var = st.sidebar.selectbox(
-    "Variable for peer comparison",
-    options=selected_cols,
-)
-
 sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins = get_latest_data()
 
 # ---------------------------------------------------------
