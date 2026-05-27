@@ -182,4 +182,4 @@ def get_latest_data():
 
     except Exception as e:
         st.warning(f'⚠️ Marktdaten konnten nicht geladen werden: {e}')
-        return None, None, None, None, None
+        return None, None, None, None, None, None, None
