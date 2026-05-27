@@ -1,8 +1,8 @@
-"""Utility functions for Kristallkugel app."""
 import pandas as pd
 import numpy as np
 import yfinance as yf
 import joblib
+import streamlit as st
 
 def normalize(df):
     return df.div(df.iloc[0])
