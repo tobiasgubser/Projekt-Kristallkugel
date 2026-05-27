@@ -85,7 +85,7 @@ selected_var = st.sidebar.selectbox(
     options=selected_cols,
 )
 
-sp500_pct, vix_close, gold_pct, brent_pct, wti_pct = get_latest_data()
+sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins = get_latest_data()
 
 # ---------------------------------------------------------
 # Tabs
