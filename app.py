@@ -60,7 +60,7 @@ st.sidebar.header("Settings")
 handelstage = df_all.index.date
 
 stichtag = st.sidebar.date_input(
-    "Stichtag",
+    "Stichtag Historische Daten",
     value=df_all.index.max().date(),
     min_value=df_all.index.min().date(),
     max_value=df_all.index.max().date(),
@@ -120,7 +120,7 @@ prediction  = model.predict(input_data)[0]
 probability = model.predict_proba(input_data)[0]
 
 # --------- Ergebnis anzeigen --------- #
-st.subheader('🔮 Prognose für morgen')
+st.subheader('Prognose für morgen')
 
 if prediction == 1:
     st.success(f'📈 SPI steigt  —  Wahrscheinlichkeit: {probability[1]:.1%}')
@@ -128,8 +128,9 @@ else:
     st.error(f'📉 SPI fällt  —  Wahrscheinlichkeit: {probability[0]:.1%}')
 st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
 
+st.subheader('Historische Daten')
 tab_dashboard, tab_finance, tab_news, tab_event, tab_forecast, tab_raw = st.tabs(
-    ["📊 Dashboard", "🏦 Finanzdaten", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
+    ["📊 SPI", "🏦 Finanzdaten", "📰 News", "📉 Event-Studien", "🔮 Forecast", "📄 Raw Data"]
 )
 
 # ---------------------------------------------------------
