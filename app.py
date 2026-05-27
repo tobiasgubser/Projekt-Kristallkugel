@@ -115,7 +115,7 @@ with tab_event:
         render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag)
 
 with tab_forecast:
-        render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model, features)
+        render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model, features)
 
 with tab_raw:
         render_raw_data_tab(df_all, stichtag)
