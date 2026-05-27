@@ -19,7 +19,7 @@ def render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp
         'oil_WTI (%)':            wti_pct,
         'gold_Gold (%)':          gold_pct,
         'meteo_Temperatur (°C)':  temp,
-        'snb_SNB Leitzins'        leitzins
+        'snb_SNB Leitzins':       leitzins
     }])
     
     prediction  = model.predict(input_data)[0]
