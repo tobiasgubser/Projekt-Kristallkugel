@@ -47,6 +47,7 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
         c4.metric("1 Tag", "", delta_day, delta_color=color_day)
 
     st.subheader("Normalized Performance (start = 1)")
+    peer_avg = norm.mean(axis=1)
     df_plot = norm[selected_cols].copy()
     df_plot["Peer average"] = df_plot.mean(axis=1)
     df_plot["Date"] = df_plot.index
@@ -55,10 +56,6 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     fig = px.line(df_long, x="Date", y="Value", color="Variable")
     fig.update_layout(height=500, legend_title_text="")
     st.plotly_chart(fig, use_container_width=True)
-
-    st.subheader(f"{selected_var} vs Peer Average")
-    peers = norm
-    peer_avg = peers.mean(axis=1)
 
     for c in selected_cols:
         st.subheader(f"Delta: {c} minus Peer Average")
