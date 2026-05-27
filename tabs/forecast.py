@@ -4,7 +4,7 @@ def render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp
     st.title('🔮 Kristallkugel – SPI Prognose')
     st.subheader('Vorhersage für den nächsten Handelstag')
     
-    col1, col2, col3 = st.columns(7)
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     col1.metric('S&P 500 (%)',     f'{sp500_pct:.2f}%')
     col2.metric('VIX',             f'{vix_close:.2f}')
     col3.metric('Gold (%)',        f'{gold_pct:.2f}%')
