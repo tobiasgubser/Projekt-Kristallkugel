@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 from app_utils import (
     normalize, compute_peer_deltas, compute_performance, 
-    forecast_series, compute_event_study
+    forecast_series, compute_event_study,get_latest_data
 )
 from tabs.dashboard import render_dashboard_tab
 from tabs.finance import render_finance_tab
@@ -77,6 +77,8 @@ selected_var = st.sidebar.selectbox(
     options=selected_cols,
 )
 
+sp500_pct, vix_close, gold_pct, brent_pct, wti_pct = get_latest_data()
+
 # ---------------------------------------------------------
 # Tabs
 # ---------------------------------------------------------
@@ -104,7 +106,7 @@ with tab_event:
         render_event_tab(df_all, df_news, selected_cols, handelstage, compute_event_study, stichtag)
 
 with tab_forecast:
-        render_forecast_tab(df_all, selected_cols, forecast_series)
+        render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct)
 
 with tab_raw:
         render_raw_data_tab(df_all, stichtag)
