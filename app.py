@@ -4,10 +4,7 @@ import numpy as np
 import joblib
 import plotly.express as px
 import datetime
-from app_utils import (
-    normalize, compute_peer_deltas, compute_performance, 
-    forecast_series, compute_event_study,get_latest_data
-)
+from app_utils import normalize, compute_peer_deltas, compute_performance, get_latest_data
 from tabs.dashboard import render_dashboard_tab
 from tabs.finance import render_finance_tab
 from tabs.news import render_news_tab
