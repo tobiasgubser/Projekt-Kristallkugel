@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-def render_forecast_tab(dsp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model,features):
+def render_forecast_tab(sp500_pct, vix_close, gold_pct, brent_pct, wti_pct,model,features):
     st.title('🔮 Kristallkugel – SPI Prognose')
     st.subheader('Vorhersage für den nächsten Handelstag')
     
