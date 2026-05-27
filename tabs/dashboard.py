@@ -52,7 +52,8 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, selected
     df_plot["Date"] = df_plot.index
     
     df_long = df_plot.melt(id_vars="Date", var_name="Variable", value_name="Value")
-    fig_norm.update_layout(height=500, legend_title_text="")
+    fig = px.line(df_long, x="Date", y="Value", color="Variable")
+    fig.update_layout(height=500, legend_title_text="")
     st.plotly_chart(fig, use_container_width=True)
 
     st.subheader(f"{selected_var} vs Peer Average")
