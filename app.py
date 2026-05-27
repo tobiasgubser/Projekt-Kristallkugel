@@ -64,16 +64,17 @@ if stichtag not in handelstage:
     st.warning("Wähle bitte einen SPI Handelstag aus (keine Wochenenden / Feiertage).")
     st.stop()
 
+assets = ["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"]
 selected_cols = st.sidebar.multiselect(
     "Select variables",
-    options=["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"],
+    options=assets,
     default=["SPI"],
 )
 if not selected_cols:
     st.warning("Please select at least one variable.")
     st.stop()
 
-norm = normalize(df_all["SPI", "Banken", "Finanzen", "Gesundheit", "Lebensmittel", "Versicherungen"])
+norm = normalize(df_all[assets])
 deltas = compute_peer_deltas(norm)
 
 selected_var = st.sidebar.selectbox(
