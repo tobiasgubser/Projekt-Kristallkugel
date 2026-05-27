@@ -119,7 +119,7 @@ probability = model.predict_proba(input_data)[0]
 
 # --------- Ergebnis anzeigen --------- #
 morgen = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%d.%m.%Y")
-st.subheader(f"Vorhersage für den nächsten Handelstag ({morgen})")
+st.subheader(f'Vorhersage für den nächsten Handelstag ({morgen})')
 
 if prediction == 1:
     st.success(f'📈 SPI steigt  —  Wahrscheinlichkeit: {probability[1]:.1%}')
@@ -129,8 +129,7 @@ st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
 
 st.markdown("---")
 
-hist_date = stichtag.strftime("%d.%m.%Y")
-st.subheader('Historische Daten ({stichtag})')
+st.subheader(f'Historische Daten ({stichtag.strftime("%d.%m.%Y")})')
 tab_dashboard, tab_finance, tab_news, tab_raw = st.tabs(["📊 SPI", "🏦 Finanzdaten", "📰 News", "📄 Raw Data"])
 
 # ---------------------------------------------------------
