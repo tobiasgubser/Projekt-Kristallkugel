@@ -3,6 +3,8 @@ import numpy as np
 import yfinance as yf
 import joblib
 import streamlit as st
+import datetime as dt
+import io, requests
 
 def normalize(df):
     return df.div(df.iloc[0])
@@ -165,7 +167,13 @@ def get_latest_data():
         wti_pct = wti['Close'].pct_change().dropna().iloc[-1].item() * 100
 
         # Temperatur
-        temp = 0
+        temp = (pd.read_csv(io.StringIO(requests.get('https://data.stadt-zuerich.ch/dataset/ugz_meteodaten_stundenmittelwerte/download/ugz_ogd_meteo_h1_2026.csv').content.decode('utf-8')), sep=',', engine='python')
+                .pipe(lambda df: df[df['Parameter'] == 'T'])
+                .assign(Datum=lambda df: pd.to_datetime(df['Datum']))
+                .pipe(lambda df: df[df['Datum'].dt.date == df['Datum'].dt.date.max()])
+                .pipe(lambda df: df[df['Datum'].dt.hour >= 6])['Wert']
+                .mean()
+            )
 
         # Leitzins
         leitzins = 0
