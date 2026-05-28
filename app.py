@@ -93,6 +93,7 @@ c2.markdown(kpi_normal('VIX',             f'{vix_close:.2f}'), unsafe_allow_html
 c3.markdown(kpi_normal('Brent (%)',       f'{brent_pct:.2f}%'), unsafe_allow_html=True)
 c4.markdown(kpi_normal('WTI (%)',         f'{wti_pct:.2f}%'), unsafe_allow_html=True)
 st.markdown("")
+c1, c2, c3, c4 = st.columns(4)
 c1.markdown(kpi_normal('Gold (%)',        f'{gold_pct:.2f}%'), unsafe_allow_html=True)
 c2.markdown(kpi_normal('SNB Leitzins',    f'{leitzins:.2f}%'), unsafe_allow_html=True)
 c3.markdown(kpi_normal('Temperatur (°C)', f'{temp:.0f}°C'), unsafe_allow_html=True)
