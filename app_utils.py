@@ -116,3 +116,51 @@ def get_latest_data():
     except Exception as e:
         st.warning(f'⚠️ Marktdaten konnten nicht geladen werden: {e}')
         return None, None, None, None, None, None, None
+
+def kpi_normal(label, value):
+    return f"""
+    <div style="
+        background-color: #f8fafc;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        font-family: sans-serif;
+    ">
+        <div style="font-size: 13px; color: #475569; margin-bottom: 4px;">
+            {label}
+        </div>
+        <div style="font-size: 22px; font-weight: 600; color: #000000;">
+            {value:,.2f}
+        </div>
+    </div>
+    """
+
+def kpi_color(label, value):
+    if value > 0.1:
+        color = "#16a34a"  # grün
+        arrow = "▲"
+    elif value < -0.1:
+        color = "#dc2626"  # rot
+        arrow = "▼"
+    else:
+        color = "#ca8a04"  # gelb
+        arrow = "▶"
+
+    return f"""
+    <div style="
+        background-color: #f8fafc;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        font-family: sans-serif;
+    ">
+        <div style="font-size: 13px; color: #475569; margin-bottom: 4px;">
+            {label}
+        </div>
+        <div style="font-size: 22px; font-weight: 600; color: {color};">
+            {arrow} {value:.2f}%
+        </div>
+    </div>
+    """
