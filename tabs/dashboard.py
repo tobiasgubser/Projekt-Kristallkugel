@@ -50,10 +50,10 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
     df_long = df_plot.melt(id_vars="Date", var_name="Variable", value_name="Value")
     fig = px.line(df_long, x="Date", y="Value", color="Variable")
     fig.update_layout(height=500, legend_title_text="")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch)
 
     for c in selected_cols:
         st.subheader(f"Delta: {c} minus Peer Average")
         fig_delta = px.area(deltas, x=deltas.index, y=c)
         fig_delta.update_layout(height=300, legend_title_text="")
-        st.plotly_chart(fig_delta, use_container_width=True)
+        st.plotly_chart(fig_delta, width='stretch)
