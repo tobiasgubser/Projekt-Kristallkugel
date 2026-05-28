@@ -14,7 +14,7 @@ def render_meteo_tab(df_all, stichtag):
 
     st.markdown(f"### Wetter des Tages")
     c1, c2, c3, c4 = st.columns(4)
-    c1..markdown(kpi_normal("Temperatur", f"{icon} {temp: .1f} °C"), unsafe_allow_html=True)
+    c1.markdown(kpi_normal("Temperatur", f"{icon} {temp: .1f} °C"), unsafe_allow_html=True)
     c2.markdown(kpi_normal("Niederschlagsdauer", f"{rain: .1f} min"), unsafe_allow_html=True)
     c3.markdown(kpi_normal("Wind", f"{wind: .1f} km/h"), unsafe_allow_html=True)
     c4.markdown(kpi_normal("Luftfeuchtigkeit", f"{humidity: .1f} %"), unsafe_allow_html=True)
