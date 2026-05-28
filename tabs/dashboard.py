@@ -47,13 +47,13 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
         def kpi_block(label, value):
             if value > 0.1:
                 color = "#16a34a"  # grün
-                arrow = "⇧"
+                arrow = "▲"
             elif value < -0.1:
                 color = "#dc2626"  # rot
-                arrow = "⇩"
+                arrow = "▼"
             else:
                 color = "#ca8a04"  # gelb
-                arrow = "⇨"
+                arrow = "▶"
         
             return f"""
             <div style="
