@@ -5,7 +5,8 @@ import joblib
 import plotly.express as px
 import datetime
 from app_utils import normalize, compute_peer_deltas, compute_performance, get_latest_data
-from tabs.dashboard import render_dashboard_tab
+from tabs.spi import render_spi_tab
+from tabs.meteo import render_meteo_tab
 from tabs.finance import render_finance_tab
 from tabs.news import render_news_tab
 from tabs.raw_data_intf import render_raw_data_tab
@@ -121,19 +122,22 @@ st.caption('⚠️ Diese Prognose ist kein Anlageratschlag.')
 st.markdown("---")
 
 st.subheader(f'Historische Daten ({stichtag.strftime("%d.%m.%Y")})')
-tab_dashboard, tab_finance, tab_news, tab_raw = st.tabs(["📊 SPI", "🏦 Finanzdaten", "📰 News", "📄 Raw Data"])
+tab_spi, tab_finance, tab_news, tab_raw = st.tabs(["📊 SPI", "🏦 Finanzdaten", "📰 News", "📄 Raw Data"])
 
 # ---------------------------------------------------------
 # Render Tabs
 # ---------------------------------------------------------
-with tab_dashboard:
-        render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_performance, handelstage)
+with tab_spi:
+    render_spi_tab(df_all, stichtag, selected_cols, norm, deltas, compute_performance, handelstage)
+
+with tab_meteo:
+    render_meteo_tab(df_all, stichtag)
 
 with tab_finance:
     render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, handelstage)
 
 with tab_news:
-        render_news_tab(df_news, stichtag)
+    render_news_tab(df_news, stichtag)
 
 with tab_raw:
-        render_raw_data_tab(df_all, stichtag)
+    render_raw_data_tab(df_all, stichtag)
