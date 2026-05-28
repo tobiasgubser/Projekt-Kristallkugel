@@ -4,4 +4,3 @@ numpy
 plotly
 yfinance
 joblib
-scikit-learn==1.6.1
