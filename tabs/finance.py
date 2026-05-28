@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from app.utils import kpi_normal, kpi_color
+from app_utils import kpi_normal, kpi_color
 
 def render_finance_tab(df_all, stichtag, norm, deltas, compute_performance, handelstage):
 
