@@ -37,9 +37,9 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
         st.markdown(f"### {col}")
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Stand", f"{nominal:,.2f}")
-        c2.metric("YTD (%)", f"{perf_ytd:.2f}", perf_ytd, delta_color=color_ytd)
-        c3.metric("1 Woche (%)", f"{perf_week:.2f}", perf_week, delta_color=color_week)
-        c4.metric("1 Tag (%)", f"{perf_day:.2f}", perf_day, delta_color=color_day)
+        c2.metric("YTD (%)", '', f"{perf_ytd:.2f}", delta_color=color_ytd)
+        c3.metric("1 Woche (%)", '', f"{perf_week:.2f}", delta_color=color_week)
+        c4.metric("1 Tag (%)", '', f"{perf_day:.2f}", delta_color=color_day)
 
     st.subheader("Normalized Performance (start = 1)")
     peer_avg = norm.mean(axis=1)
