@@ -4,7 +4,7 @@ import numpy as np
 import joblib
 import plotly.express as px
 import datetime
-from app_utils import normalize, compute_peer_deltas, compute_performance, get_latest_data
+from app_utils import normalize, compute_peer_deltas, compute_performance, get_latest_data, kpi_normal
 from tabs.spi import render_spi_tab
 from tabs.meteo import render_meteo_tab
 from tabs.finance import render_finance_tab
@@ -87,14 +87,14 @@ st.title("🔮 Kristallkugel")
 
 st.subheader(f'Aktuelle Daten ({datetime.date.today().strftime("%d.%m.%Y")})')
 
-col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-col1.metric('S&P 500 (%)',     f'{sp500_pct:.2f}%')
-col2.metric('VIX',             f'{vix_close:.2f}')
-col3.metric('Gold (%)',        f'{gold_pct:.2f}%')
-col4.metric('Brent (%)',       f'{brent_pct:.2f}%')
-col5.metric('WTI (%)',         f'{wti_pct:.2f}%')
-col6.metric('SNB Leitzins',    f'{leitzins:.2f}%')
-col7.metric('Temperatur (°C)', f'{temp:.0f}°C')
+c1, c2, c3, c4 = st.columns(4)
+c1.markdown(kpi_normal('S&P 500 (%)',     f'{sp500_pct:.2f}%'), unsafe_allow_html=True)
+c2.markdown(kpi_normal('VIX',             f'{vix_close:.2f}'), unsafe_allow_html=True)
+c3.markdown(kpi_normal('Brent (%)',       f'{brent_pct:.2f}%'), unsafe_allow_html=True)
+c4.markdown(kpi_normal('WTI (%)',         f'{wti_pct:.2f}%'), unsafe_allow_html=True)
+c1.markdown(kpi_normal('Gold (%)',        f'{gold_pct:.2f}%'), unsafe_allow_html=True)
+c2.markdown(kpi_normal('SNB Leitzins',    f'{leitzins:.2f}%'), unsafe_allow_html=True)
+c3.markdown(kpi_normal('Temperatur (°C)', f'{temp:.0f}°C'), unsafe_allow_html=True)
 
 # --------- Prediction --------- #
 input_data = pd.DataFrame([{
