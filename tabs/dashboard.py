@@ -27,7 +27,7 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
         nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
 
         def metric_block(value):
-            delta_color = "normal" if value >= 0 else "inverse"
+            delta_color = "inverse" if value >= 0 else "inverse"
             return value, delta_color
         
         delta_ytd, color_ytd = metric_block(perf_ytd)
@@ -37,9 +37,9 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
         st.markdown(f"### {col}")
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Stand", f"{nominal:,.2f}")
-        c2.metric("YTD (%)", perf_ytd, perf_ytd, delta_color=color_ytd)
-        c3.metric("1 Woche (%)", perf_week, perf_week, delta_color=color_week)
-        c4.metric("1 Tag (%)", perf_day, perf_day, delta_color=color_day)
+        c2.metric("YTD (%)", f"{perf_ytd:.2f}", perf_ytd, delta_color=color_ytd)
+        c3.metric("1 Woche (%)", f"{perf_week:.2f}", perf_week, delta_color=color_week)
+        c4.metric("1 Tag (%)", f"{perf_day:.2f}", perf_day, delta_color=color_day)
 
     st.subheader("Normalized Performance (start = 1)")
     peer_avg = norm.mean(axis=1)
