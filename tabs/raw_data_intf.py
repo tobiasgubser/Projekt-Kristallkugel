@@ -42,7 +42,7 @@ def render_raw_data_tab(df_all, stichtag):
 
     st.subheader("SPI / Sektoren")
     spi_cols = get_spi_columns(df_all, PREFIXES)
-    st.dataframe(df_filtered[spi_cols], use_container_width=True, hide_index=True)
+    st.dataframe(df_filtered[spi_cols], width='stretch', hide_index=True)
 
     # --- Alle anderen Gruppen ---
     for group_name, prefix in PREFIXES.items():
@@ -52,4 +52,4 @@ def render_raw_data_tab(df_all, stichtag):
     
         st.subheader(f"📁 {group_name}")
         df_group = df_filtered[cols].rename(columns=lambda c: c.replace(prefix, ""))
-        st.dataframe(df_group, use_container_width=True, hide_index=True)
+        st.dataframe(df_group, width='stretch', hide_index=True)
