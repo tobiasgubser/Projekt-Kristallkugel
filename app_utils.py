@@ -118,6 +118,10 @@ def get_latest_data():
         return None, None, None, None, None, None, None
 
 def kpi_normal(label, value):
+    if isinstance(value, (int, float)):
+        value_html = f"{value:,.2f}"
+    else:
+        value_html = value
     return f"""
     <div style="
         background-color: #f8fafc;
@@ -131,7 +135,7 @@ def kpi_normal(label, value):
             {label}
         </div>
         <div style="font-size: 22px; font-weight: 600; color: #000000;">
-            {value:,.2f}
+            {value_html}
         </div>
     </div>
     """
