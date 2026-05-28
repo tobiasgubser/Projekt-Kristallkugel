@@ -25,17 +25,35 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
     for col in selected_cols:
         perf_ytd, perf_week, perf_day = compute_performance(col, stichtag, df_all, handelstage)
         nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
+        def kpi_stand(label, value):
+            return f"""
+            <div style="
+                background-color: #f8fafc;
+                padding: 12px 16px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                text-align: center;
+                font-family: sans-serif;
+            ">
+                <div style="font-size: 13px; color: #475569; margin-bottom: 4px;">
+                    {label}
+                </div>
+                <div style="font-size: 22px; font-weight: 600; color: #000000;">
+                    {value:,.2f}
+                </div>
+            </div>
+            """
 
         def kpi_block(label, value):
             if value > 0.1:
                 color = "#16a34a"  # grün
-                arrow = "▲"
+                arrow = "⇧"
             elif value < -0.1:
                 color = "#dc2626"  # rot
-                arrow = "▼"
+                arrow = "⇩"
             else:
                 color = "#ca8a04"  # gelb
-                arrow = "→"
+                arrow = "⇨"
         
             return f"""
             <div style="
@@ -57,7 +75,7 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
         
         st.markdown(f"### {col}")
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Stand", f"{nominal:,.2f}")
+        c1.markdown(kpi_stand("Stand", nominal), unsafe_allow_html=True)
         c2.markdown(kpi_block("YTD (%)", perf_ytd), unsafe_allow_html=True)
         c3.markdown(kpi_block("1 Woche (%)", perf_week), unsafe_allow_html=True)
         c4.markdown(kpi_block("1 Tag (%)", perf_day), unsafe_allow_html=True)
