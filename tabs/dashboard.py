@@ -26,20 +26,41 @@ def render_dashboard_tab(df_all, stichtag, selected_cols, norm, deltas, compute_
         perf_ytd, perf_week, perf_day = compute_performance(col, stichtag, df_all, handelstage)
         nominal = df_all.loc[df_all.index.date == stichtag, col].iloc[0]
 
-        def metric_block(value):
-            delta_color = "inverse" if value >= 0 else "inverse"
-            return value, delta_color
+        def kpi_block(label, value):
+            if value > 0.1:
+                color = "#16a34a"  # grün
+                arrow = "▲"
+            elif value < -0.1:
+                color = "#dc2626"  # rot
+                arrow = "▼"
+            else:
+                color = "#ca8a04"  # gelb
+                arrow = "→"
         
-        delta_ytd, color_ytd = metric_block(perf_ytd)
-        delta_week, color_week = metric_block(perf_week)
-        delta_day, color_day = metric_block(perf_day)
+            return f"""
+            <div style="
+                background-color: #f8fafc;
+                padding: 12px 16px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                text-align: center;
+                font-family: sans-serif;
+            ">
+                <div style="font-size: 13px; color: #475569; margin-bottom: 4px;">
+                    {label}
+                </div>
+                <div style="font-size: 22px; font-weight: 600; color: {color};">
+                    {arrow} {value:.2f}%
+                </div>
+            </div>
+            """
         
         st.markdown(f"### {col}")
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Stand", f"{nominal:,.2f}")
-        c2.metric("YTD (%)", '', f"{perf_ytd:.2f}", delta_color=color_ytd)
-        c3.metric("1 Woche (%)", '', f"{perf_week:.2f}", delta_color=color_week)
-        c4.metric("1 Tag (%)", '', f"{perf_day:.2f}", delta_color=color_day)
+        c2.markdown(kpi_block("YTD (%)", perf_ytd), unsafe_allow_html=True)
+        c3.markdown(kpi_block("1 Woche (%)", perf_week), unsafe_allow_html=True)
+        c4.markdown(kpi_block("1 Tag (%)", perf_day), unsafe_allow_html=True)
 
     st.subheader("Normalized Performance (start = 1)")
     peer_avg = norm.mean(axis=1)
