@@ -516,7 +516,7 @@ from sklearn.metrics import (
 )
 
 # ------------------------------------
-# Stabilere Logistische Regression
+# Stabile Logistische Regression
 # ------------------------------------
 def run_logreg(df_all, feature_cols):
 
@@ -530,13 +530,13 @@ def run_logreg(df_all, feature_cols):
 
     RANDOM_STATE = 42
 
-    # Pipeline: Standardisierung + LogReg
+    # Pipeline
     pipe = Pipeline([
         ("scaler", StandardScaler()),
         ("logreg", LogisticRegression(max_iter=2000, random_state=RANDOM_STATE))
     ])
 
-    # Cross-Validation Setup
+    # Cross-Validation
     cv = KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
 
     # Stabilere Vorhersagen
@@ -545,7 +545,7 @@ def run_logreg(df_all, feature_cols):
     # Confusion Matrix
     cm = confusion_matrix(y, y_pred)
 
-    # Modell einmal komplett fitten, um Koeffizienten zu erhalten
+    # Modell einmal fitten für Koeffizienten
     pipe.fit(X, y)
     coeffs = pd.DataFrame({
         "Feature": feature_cols,
@@ -569,3 +569,45 @@ def run_logreg(df_all, feature_cols):
         "recall": rec,
         "f1": f1
     }
+
+
+# ------------------------------------
+# Funktion für Balkendiagramm (Koeffizienten)
+# ------------------------------------
+def plot_logreg_coeffs(results_logreg):
+
+    coeffs = results_logreg["coeffs"]
+
+    plt.figure(figsize=(8, 10))
+    sns.barplot(
+        data=coeffs,
+        x="Koeffizient",
+        y="Feature",
+        palette="coolwarm"
+    )
+    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
+    plt.xlabel("Koeffizient (logistische Regression)")
+    plt.ylabel("")
+    plt.tight_layout()
+    plt.show()
+
+
+# ------------------------------------
+# Funktion für Balkendiagramm (Koeffizienten)
+# ------------------------------------
+def plot_logreg_coeffs(results_logreg):
+
+    coeffs = results_logreg["coeffs"]
+
+    plt.figure(figsize=(8, 10))
+    sns.barplot(
+        data=coeffs,
+        x="Koeffizient",
+        y="Feature",
+        palette="coolwarm"
+    )
+    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
+    plt.xlabel("Koeffizient (logistische Regression)")
+    plt.ylabel("")
+    plt.tight_layout()
+    plt.show()
