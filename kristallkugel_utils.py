@@ -10,6 +10,15 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import KFold, cross_val_predict
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import (
+    confusion_matrix,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
 
 # Sonstiges
 import re
@@ -494,90 +503,69 @@ def clean_post(text):
 
     return text
 
+from sklearn.model_selection import KFold, cross_val_predict
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import (
+    confusion_matrix,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
 # ------------------------------------
-# Funktion für Logistische Regression
+# Stabilere Logistische Regression
 # ------------------------------------
 def run_logreg(df_all, feature_cols):
 
-    # interne Kopie erstellen, damit df_all unverändert bleibt
     df_logreg = df_all.copy()
 
-    # ------------ Zielvariable erstellen (1 = Anstieg, 0 = Rückgang) ------------ #
+    # Zielvariable
     df_logreg["SPI_up"] = np.where(df_logreg["SPI (%)"] > 0, 1, 0)
 
-    # ------------ Features definieren (alle externen Faktoren) ------------ #
-    X = df_logreg[feature_cols].copy()
+    X = df_logreg[feature_cols].fillna(0)
     y = df_logreg["SPI_up"]
 
-    # Fehlende Werte ersetzen (notwendig für sklearn)
-    X = X.fillna(0)
+    RANDOM_STATE = 42
 
-    # ------------ Standardisierung der Features ------------ #
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    # Pipeline: Standardisierung + LogReg
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("logreg", LogisticRegression(max_iter=2000, random_state=RANDOM_STATE))
+    ])
 
-    # ------------ Trainings- und Testdaten splitten ------------ #
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.25, shuffle=False
-    )
+    # Cross-Validation Setup
+    cv = KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
 
-    # ------------ Modell erstellen und trainieren ------------ #
-    model = LogisticRegression(max_iter=2000)
-    model.fit(X_train, y_train)
+    # Stabilere Vorhersagen
+    y_pred = cross_val_predict(pipe, X, y, cv=cv)
 
-    # ------------ Vorhersage und Auswertung ------------ #
-    y_pred = model.predict(X_test)
+    # Confusion Matrix
+    cm = confusion_matrix(y, y_pred)
 
-    # ------------ Einflussstärken (Koeffizienten) speichern ------------ #
+    # Modell einmal komplett fitten, um Koeffizienten zu erhalten
+    pipe.fit(X, y)
     coeffs = pd.DataFrame({
-        "Feature": X.columns,
-        "Koeffizient": model.coef_[0]
+        "Feature": feature_cols,
+        "Koeffizient": pipe.named_steps["logreg"].coef_[0]
     }).sort_values(by="Koeffizient", ascending=False)
 
-    # Rückgabe aller relevanten Ergebnisse
+    # Performance-Metriken
+    acc = accuracy_score(y, y_pred)
+    prec = precision_score(y, y_pred, zero_division=0)
+    rec = recall_score(y, y_pred, zero_division=0)
+    f1 = f1_score(y, y_pred, zero_division=0)
+
     return {
-        "model": model,
-        "scaler": scaler,
-        "X_test": X_test,
-        "y_test": y_test,
+        "model": pipe,
+        "y_true": y,
         "y_pred": y_pred,
-        "coeffs": coeffs
+        "cm": cm,
+        "coeffs": coeffs,
+        "accuracy": acc,
+        "precision": prec,
+        "recall": rec,
+        "f1": f1
     }
-
-
-# ------------------------------------
-# Funktion für Balkendiagramm (Koeffizienten)
-# ------------------------------------
-def plot_logreg_coeffs(results_logreg):
-
-    coeffs = results_logreg["coeffs"]
-
-    plt.figure(figsize=(8, 10))
-    sns.barplot(
-        data=coeffs,
-        x="Koeffizient",
-        y="Feature",
-        palette="coolwarm"
-    )
-    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
-    plt.xlabel("Koeffizient (logistische Regression)")
-    plt.ylabel("")
-    plt.tight_layout()
-    plt.show()
-
-
-# ------------------------------------
-# Funktion für Confusion Matrix (Heatmap)
-# ------------------------------------
-def plot_logreg_confusion(results_logreg):
-
-    cm = confusion_matrix(results_logreg["y_test"], results_logreg["y_pred"])
-
-    plt.figure(figsize=(4, 3))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
-    plt.title("Confusion Matrix – Logistische Regression")
-    plt.xlabel("Vorhergesagt")
-    plt.ylabel("Tatsächlich")
-    plt.tight_layout()
-    plt.show()
-
