@@ -593,21 +593,18 @@ def plot_logreg_coeffs(results_logreg):
 
 
 # ------------------------------------
-# Funktion für Balkendiagramm (Koeffizienten)
+# Funktion für Confusion Matrix (Heatmap)
 # ------------------------------------
-def plot_logreg_coeffs(results_logreg):
+def plot_logreg_confusion(results_logreg):
 
-    coeffs = results_logreg["coeffs"]
+    # Neue Version: Confusion Matrix kommt direkt aus results_logreg
+    cm = results_logreg["cm"]
 
-    plt.figure(figsize=(8, 10))
-    sns.barplot(
-        data=coeffs,
-        x="Koeffizient",
-        y="Feature",
-        palette="coolwarm"
-    )
-    plt.title("Einfluss der externen Faktoren auf die Wahrscheinlichkeit eines SPI-Anstiegs")
-    plt.xlabel("Koeffizient (logistische Regression)")
-    plt.ylabel("")
+    plt.figure(figsize=(4, 3))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+    plt.title("Confusion Matrix – Logistische Regression")
+    plt.xlabel("Vorhergesagt")
+    plt.ylabel("Tatsächlich")
     plt.tight_layout()
     plt.show()
+
