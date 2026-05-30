@@ -638,3 +638,28 @@ def plot_logreg_confusion(results_logreg):
     plt.tight_layout()
     plt.show()
 
+# ------------------------------------
+# Funktion für GitHub Upload
+# ------------------------------------
+# GitHub Einstellungen
+REPO = 'tobiasgubser/Projekt-Kristallkugel'
+BRANCH = 'main'
+TOKEN = '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'
+def upload_to_github(local_path, repo_path, message):
+    with open(local_path, 'rb') as f:
+        content = f.read()
+
+    content_b64 = base64.b64encode(content).decode('utf-8')
+    url = f'https://api.github.com/repos/{REPO}/contents/data/{repo_path}'
+    headers = {'Authorization': f'token {TOKEN}', 'Accept': 'application/vnd.github+json'}
+
+    # Prüfen, ob Datei existiert → SHA holen
+    r = requests.get(url, headers=headers)
+    sha = r.json()['sha'] if r.status_code == 200 else None
+    payload = {'message': message, 'content': content_b64, 'branch': BRANCH}
+    if sha:
+        payload['sha'] = sha
+
+    response = requests.put(url, headers=headers, json=payload)
+    print(f'Upload {repo_path}: {response.status_code}')
+    print(response.json())
