@@ -605,8 +605,10 @@ def run_logreg(df_all, feature_cols,n_splits=5):
 def plot_logreg_coeffs(results_logreg):
 
     coeffs = results_logreg["coeffs"]
+    n = len(coeffs)
+    height = max(10, n * 0.5)
 
-    plt.figure(figsize=(8, 10))
+    plt.figure(figsize=(8, height))
     sns.barplot(
         data=coeffs,
         x="Koeffizient",
