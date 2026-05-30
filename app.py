@@ -114,7 +114,7 @@ input_data = pd.DataFrame([{
 missing = input_data.isna().any(axis=1).iloc[0]
 if missing:
     fehlende_features = input_data.columns[input_data.isna().iloc[0]].tolist()
-    st.warning(f'Achtung: Folgende Werte konnten nicht geladen werden und werden mit 0 ersetzt: {fehlende_features}')
+    st.warning(f'Achtung: Folgende Werte konnten nicht geladen werden und wurden in der Prognose mit 0 ersetzt: {fehlende_features}')
 
 input_data_cleaned = input_data.fillna(0)
 prediction  = model.predict(input_data_cleaned)[0]
