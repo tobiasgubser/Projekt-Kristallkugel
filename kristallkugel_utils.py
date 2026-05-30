@@ -663,3 +663,68 @@ def upload_to_github(local_path, repo_path, message):
     response = requests.put(url, headers=headers, json=payload)
     print(f'Upload {repo_path}: {response.status_code}')
     print(response.json())
+
+# ------------------------------------
+# Wikipedia Scraper
+# ------------------------------------
+def parse_event_block(day_block, current_date):
+    rows = []
+
+    for p in day_block.select('div.current-events-content > p'):
+        b = p.find('b')
+        if not b:
+            continue
+
+        category = b.get_text(strip=True)
+        ul = p.find_next_sibling('ul')
+        if not ul:
+            continue
+
+        for li in ul.find_all('li', recursive=False):
+
+            # Top-Level-Event extrahieren
+            event_tag = li.find('a', recursive=False)
+            if event_tag: event = event_tag.get_text(strip=True)
+            else: event = None
+            first_ul = li.find('ul', recursive=False)
+            if not first_ul:
+                full_text = li.get_text(' ', strip=True)
+                rows.append({
+                    'date': current_date,
+                    'type': category,
+                    'event': None,
+                    'event_details': None,
+                    'text': full_text
+                })
+                continue
+
+            # 2nd-Level-Events verarbeiten
+            for sub_li in first_ul.find_all('li', recursive=False):
+                sub_event_text = sub_li.get_text(' ', strip=True)
+                inner_ul = sub_li.find('ul', recursive=False)
+
+                if inner_ul:
+                    # 3rd-Level-Details extrahieren
+                    inner_text = inner_ul.get_text(' ', strip=True)
+                    sub_event_text = sub_event_text.replace(inner_text, '').strip()
+
+                    for inner_li in inner_ul.find_all('li', recursive=False):
+                        details = inner_li.get_text(' ', strip=True)
+                        rows.append({
+                            'date': current_date,
+                            'type': category,
+                            'event': event,
+                            'event_details': sub_event_text,
+                            'text': details
+                        })
+                else:
+                    # Nur zwei Ebenen vorhanden
+                    rows.append({
+                        'date': current_date,
+                        'type': category,
+                        'event': event,
+                        'event_details': None,
+                        'text': sub_event_text
+                    })
+
+    return rows
