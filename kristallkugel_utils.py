@@ -648,7 +648,7 @@ def plot_logreg_confusion(results_logreg):
 # GitHub Einstellungen
 REPO = 'tobiasgubser/Projekt-Kristallkugel'
 BRANCH = 'main'
-def upload_to_github(local_path, repo_path, message):
+def upload_to_github(TOKEN, local_path, repo_path, message):
     with open(local_path, 'rb') as f:
         content = f.read()
 
