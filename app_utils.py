@@ -85,7 +85,8 @@ def get_latest_data():
 
         # VIX
         vix = yf.download('^VIX', period='5d', auto_adjust=True, progress=False)
-        vix_close = vix['Close'].dropna().iloc[-1].item()
+        #vix_close = vix['Close'].dropna().iloc[-1].item()
+        vix_close_pct = vix['Close'].pct_change().dropna().iloc[-1].item() * 100
 
         # Gold
         gold = yf.download('GC=F', period='5d', auto_adjust=True, progress=False)
@@ -111,7 +112,8 @@ def get_latest_data():
         # Leitzins
         leitzins = max(requests.get('https://data.snb.ch/api/cube/snboffzisa/data/json/de?dimSel=D0(LZ)&fromDate=2026-01&toDate=2026-12').json()['timeseries'][0]['values'], key=lambda x: x['date'])['value']
         
-        return sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins
+        #return sp500_pct, vix_close, gold_pct, brent_pct, wti_pct, temp, leitzins
+        return sp500_pct, vix_close_pct, gold_pct, brent_pct, wti_pct, temp, leitzins
 
     except Exception as e:
         st.warning(f'⚠️ Marktdaten konnten nicht geladen werden: {e}')
