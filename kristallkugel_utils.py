@@ -606,7 +606,7 @@ def plot_logreg_coeffs(results_logreg):
 
     coeffs = results_logreg["coeffs"]
     n = len(coeffs)
-    height = max(4, min(10, n * 0.5))
+    height = max(3, min(10, n * 0.5))
 
     plt.figure(figsize=(8, height))
     sns.barplot(
