@@ -113,7 +113,7 @@ input_data = pd.DataFrame([{
 }])
 
 input_data_cleaned = input_data.fillna(0)
-prediction  = model.predict(input_data)[0]
+prediction  = model.predict(input_data_cleaned)[0]
 probability = model.predict_proba(input_data)[0]
 
 # --------- Ergebnis anzeigen --------- #
