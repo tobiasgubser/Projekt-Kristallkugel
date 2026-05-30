@@ -518,7 +518,7 @@ from sklearn.metrics import (
 # ------------------------------------
 # Stabile Logistische Regression
 # ------------------------------------
-def run_logreg(df_all, feature_cols):
+def run_logreg(df_all, feature_cols,nsplits=5):
 
     df_logreg = df_all.copy()
 
@@ -536,14 +536,36 @@ def run_logreg(df_all, feature_cols):
         ("logreg", LogisticRegression(max_iter=2000, random_state=RANDOM_STATE))
     ])
 
-    # Cross-Validation
-    cv = KFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
 
-    # Stabilere Vorhersagen
-    y_pred = cross_val_predict(pipe, X, y, cv=cv)
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+
+    y_true_all, y_pred_all, y_pred_base_all = [], [], []
+
+    
+    dummy = DummyClassifier(strategy="most_frequent")
+
+    for train_idx, test_idx in tscv.split(X):
+        X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+        y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+
+        # Echtes Modell
+        pipe.fit(X_train, y_train)
+        y_pred = pipe.predict(X_test)
+
+        # Baseline auf identischem Split
+        dummy.fit(X_train, y_train)
+        y_pred_base = dummy.predict(X_test)
+
+        y_true_all.extend(y_test.tolist())
+        y_pred_all.extend(y_pred.tolist())
+        y_pred_base_all.extend(y_pred_base.tolist())
+
+    y_true_all = np.array(y_true_all)
+    y_pred_all = np.array(y_pred_all)
+    y_pred_base_all = np.array(y_pred_base_all)
 
     # Confusion Matrix
-    cm = confusion_matrix(y, y_pred)
+    cm = confusion_matrix(y_true_all, y_pred_all)
 
     # Modell einmal fitten für Koeffizienten
     pipe.fit(X, y)
@@ -553,21 +575,27 @@ def run_logreg(df_all, feature_cols):
     }).sort_values(by="Koeffizient", ascending=False)
 
     # Performance-Metriken
-    acc = accuracy_score(y, y_pred)
-    prec = precision_score(y, y_pred, zero_division=0)
-    rec = recall_score(y, y_pred, zero_division=0)
-    f1 = f1_score(y, y_pred, zero_division=0)
+    acc = accuracy_score(y_true_all, y_pred_all)
+    prec = precision_score(y_true_all, y_pred_all, zero_division=0)
+    rec = recall_score(y_true_all, y_pred_all, zero_division=0)
+    f1 = f1_score(y_true_all, y_pred_all, zero_division=0)
+
+    # Baseline-Vergleich
+    acc_base  = accuracy_score(y_true_all, y_pred_base_all)
+    up_rate   = y.mean()  # Anteil Up-Days gesamt
 
     return {
         "model": pipe,
-        "y_true": y,
-        "y_pred": y_pred,
+        "y_true": y_true_all,
+        "y_pred": y_pred_all,
         "cm": cm,
         "coeffs": coeffs,
         "accuracy": acc,
         "precision": prec,
         "recall": rec,
-        "f1": f1
+        "f1": f1,
+        "baseline_accuracy": acc_base,
+        "up_rate": up_rate,
     }
 
 
