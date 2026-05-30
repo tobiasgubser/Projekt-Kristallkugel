@@ -11,6 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import KFold, cross_val_predict,TimeSeriesSplit, train_test_split
 from sklearn.pipeline import Pipeline
+from sklearn.dummy import DummyClassifier
 from sklearn.metrics import (
     confusion_matrix,
     accuracy_score,
