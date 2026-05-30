@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
+import requests
 import base64
 from bs4 import BeautifulSoup
 
