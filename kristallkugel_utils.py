@@ -517,7 +517,7 @@ from sklearn.metrics import (
 # ------------------------------------
 # Stabile Logistische Regression
 # ------------------------------------
-def run_logreg(df_all, feature_cols,nsplits=5):
+def run_logreg(df_all, feature_cols,n_splits=5):
 
     df_logreg = df_all.copy()
 
