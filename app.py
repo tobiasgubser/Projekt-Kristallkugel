@@ -112,6 +112,7 @@ input_data = pd.DataFrame([{
     'snb_SNB Leitzins':       leitzins
 }])
 
+input_data_cleaned = input_data.fillna(0)
 prediction  = model.predict(input_data)[0]
 probability = model.predict_proba(input_data)[0]
 
