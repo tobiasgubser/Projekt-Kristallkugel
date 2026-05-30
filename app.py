@@ -4,7 +4,7 @@ import numpy as np
 import joblib
 import plotly.express as px
 import datetime
-from app_utils import normalize, compute_peer_deltas, compute_performance, get_latest_data, kpi_normal
+from app_utils import normalize, compute_peer_deltas, compute_performance, get_latest_data, kpi_normal,kpi_color
 from tabs.spi import render_spi_tab
 from tabs.meteo import render_meteo_tab
 from tabs.finance import render_finance_tab
