@@ -30,14 +30,14 @@ def load_df_all():
 
 df_all = load_df_all()
 
-'''def get_random_forest():
-    model    = joblib.load('data/kristallkugel_model.pkl')
-    features = joblib.load('data/kristallkugel_features.pkl')
+#def get_random_forest():
+#    model    = joblib.load('data/kristallkugel_model.pkl')
+#    features = joblib.load('data/kristallkugel_features.pkl')
 
-    return model, features
+#    return model, features
 
-model, features = get_random_forest()
-'''
+#model, features = get_random_forest()
+
 model    = joblib.load('data/kristallkugel_logreg_model.pkl')
 features = joblib.load('data/kristallkugel_logreg_features.pkl')
 
