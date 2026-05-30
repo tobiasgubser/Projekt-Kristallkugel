@@ -8,9 +8,8 @@ from IPython.display import display
 # Machine Learning
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import KFold, cross_val_predict
+from sklearn.model_selection import KFold, cross_val_predict,TimeSeriesSplit, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     confusion_matrix,
