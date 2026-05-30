@@ -105,11 +105,6 @@ c3.markdown(kpi_normal('Temperatur (°C)', f'{temp:.0f}°C'), unsafe_allow_html=
 input_data = pd.DataFrame([{
     'sp500_S&P 500 (%)':      sp500_pct,
     'vix_VIX (%)':            vix_close,
-    'oil_Brent (%)':          brent_pct,
-    'oil_WTI (%)':            wti_pct,
-    'gold_Gold (%)':          gold_pct,
-    'meteo_Temperatur (°C)':  temp,
-    'snb_SNB Leitzins':       leitzins
 }])
 missing = input_data.isna().any(axis=1).iloc[0]
 if missing:
