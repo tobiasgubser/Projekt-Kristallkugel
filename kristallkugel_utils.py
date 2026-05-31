@@ -507,17 +507,6 @@ def clean_post(text):
 
     return text
 
-from sklearn.model_selection import KFold, cross_val_predict
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import (
-    confusion_matrix,
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
-)
 
 # ------------------------------------
 # Stabile Logistische Regression
@@ -550,7 +539,7 @@ def run_logreg(df_all, feature_cols,n_splits=5):
     
     dummy = DummyClassifier(strategy="most_frequent")
 
-    for train_idx, test_idx in tscv.split(X):
+    for fold, (train_idx, test_idx) in enumerate(tscv.split(X), start=1):
         X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
         y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
 
