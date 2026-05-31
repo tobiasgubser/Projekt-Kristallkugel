@@ -544,6 +544,8 @@ def run_logreg(df_all, feature_cols,n_splits=5):
     tscv = TimeSeriesSplit(n_splits=n_splits)
 
     y_true_all, y_pred_all, y_pred_base_all = [], [], []
+    fold_metrics = []
+
 
     
     dummy = DummyClassifier(strategy="most_frequent")
@@ -559,6 +561,17 @@ def run_logreg(df_all, feature_cols,n_splits=5):
         # Baseline auf identischem Split
         dummy.fit(X_train, y_train)
         y_pred_base = dummy.predict(X_test)
+
+        fold_metrics.append({
+            "Fold": fold,
+            "n_train": len(train_idx),
+            "n_test": len(test_idx),
+            "accuracy": accuracy_score(y_test, y_pred),
+            "precision": precision_score(y_test, y_pred, zero_division=0),
+            "recall": recall_score(y_test, y_pred, zero_division=0),
+            "f1": f1_score(y_test, y_pred, zero_division=0),
+            "baseline_accuracy": accuracy_score(y_test, y_pred_base),
+        })
 
         y_true_all.extend(y_test.tolist())
         y_pred_all.extend(y_pred.tolist())
@@ -588,6 +601,10 @@ def run_logreg(df_all, feature_cols,n_splits=5):
     acc_base  = accuracy_score(y_true_all, y_pred_base_all)
     up_rate   = y.mean()  # Anteil Up-Days gesamt
 
+    #Streuung der Güte über die Folds (Stabilität / "assurance")
+    fold_df = pd.DataFrame(fold_metrics)
+    fold_summary = fold_df[["accuracy", "precision", "recall", "f1"]].agg(["mean", "std"])
+
     return {
         "model": pipe,
         "y_true": y_true_all,
@@ -600,6 +617,8 @@ def run_logreg(df_all, feature_cols,n_splits=5):
         "f1": f1,
         "baseline_accuracy": acc_base,
         "up_rate": up_rate,
+        "fold_metrics": fold_df,       
+        "fold_summary": fold_summary, 
     }
 
 
